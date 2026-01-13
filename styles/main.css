@@ -1,0 +1,36 @@
+  button {
+    background-color: black;
+    color: rgb(209, 182, 32);
+    padding-top: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    border: 2px solid black;
+    border-color: black;
+    cursor: pointer;
+    font-family: system-ui;
+    transition: background-color 0.2s;
+    margin-right: 15px;
+    margin-left: 15px;
+
+  }
+
+  button:hover{
+    opacity: 0.85;
+  }
+
+  button:active{
+    opacity: 0.8;
+  }
+  
+  p {
+    font-family: system-ui;
+  }
+
+  .homepage-title{
+
+    font-size: 30px;
+    
+  }
+
