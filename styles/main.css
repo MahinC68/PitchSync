@@ -1,18 +1,37 @@
+/* Page centering (no flexbox) */
+.page {
+  height: 100vh;
+  width: 100%;
+  display: table;
+}
+
+.layout {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* Side-by-side sections */
+.home,
+.home-image {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Home content */
 .home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;      /* horizontal */
-  justify-content: center;  /* vertical */
-  height: 100vh;            /* full viewport height */
+  text-align: center;
 }
 
-/* Button row container (nested layout child) */
+/* Button row */
 .button-row {
-  display: flex;
+  text-align: center;
 }
 
-/* Buttons inside the button row */
+/* Buttons */
 .button-row button {
+  display: inline-block;
+
   margin: 10px;
   margin-right: 15px;
   margin-left: 15px;
@@ -32,7 +51,6 @@
   cursor: pointer;
   font-family: system-ui;
   transition: background-color 0.2s;
-  display: inline-block;
 }
 
 .button-row button:hover {
@@ -43,10 +61,17 @@
   opacity: 0.8;
 }
 
+/* Typography */
 p {
   font-family: system-ui;
 }
 
 .homepage-title {
   font-size: 30px;
+}
+
+/* Image sizing */
+.home-image img {
+  width: 300px;
+  height: auto;
 }
