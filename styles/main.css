@@ -1,34 +1,51 @@
-/* Page centering (no flexbox) */
+body {
+  margin: 0px;
+}
+
 .page {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
-  display: table;
+  display: flex;
+  flex-direction: column;
 }
 
 .layout {
-  display: table-cell;
-  vertical-align: middle;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
   text-align: center;
 }
 
-/* Side-by-side sections */
 .home,
 .home-image {
   display: inline-block;
   vertical-align: middle;
 }
 
-/* Home content */
 .home {
   text-align: center;
 }
 
-/* Button row */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 50px;
+
+  width: 100%;
+  padding: 0 32px;
+  box-sizing: border-box;
+
+  border: 1px solid rgb(150, 150, 150);
+}
+
 .button-row {
   text-align: center;
 }
 
-/* Buttons */
 .button-row button {
   display: inline-block;
 
@@ -61,7 +78,6 @@
   opacity: 0.8;
 }
 
-/* Typography */
 p {
   font-family: system-ui;
 }
@@ -70,7 +86,6 @@ p {
   font-size: 30px;
 }
 
-/* Image sizing */
 .home-image img {
   width: 300px;
   height: auto;
