@@ -29,6 +29,8 @@ body {
 }
 
 .header {
+
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,6 +48,12 @@ body {
 .Left-header img {
   height: 70px;
   width: auto;
+}
+
+.Right-header{
+
+   color: #B4975A
+
 }
 
 .button-row {
