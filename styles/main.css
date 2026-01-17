@@ -4,9 +4,9 @@ body {
 
 .page {
   min-height: 100vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  padding-top: 90px;
 }
 
 .layout {
@@ -29,32 +29,49 @@ body {
 }
 
 .header {
-
   position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: black;
 
-  height: 50px;
+  background: black;
+  height: 56px;
 
   width: 100%;
-  padding: 0 32px;
-  box-sizing: border-box;
+  max-width: 900px;
 
+  padding: 0 32px;
+  border-radius: 999px;
   border: 1px solid rgb(150, 150, 150);
+
+  z-index: 1000;
 }
 
+
+
 .Left-header img {
-  height: 70px;
+  height: 66px;
   width: auto;
 }
 
-.Right-header{
 
-   color: #B4975A
+.Right-header {
+  color: #B4975A;
+  border-radius: 10px;
+  padding: 2px 12px; 
+
+  border: 2px solid #B4975A;
+  cursor: pointer;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
 
 }
+
 
 .button-row {
   text-align: center;
