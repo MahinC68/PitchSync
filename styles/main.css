@@ -60,11 +60,11 @@ body {
 
 
 .Right-header {
-  color: #B4975A;
+  color: #d7bb7f;
   border-radius: 10px;
   padding: 2px 12px; 
 
-  border: 2px solid #B4975A;
+  border: 1.65px solid #d7bb7f;
   cursor: pointer;
   font-size: 14px;
   display: inline-flex;
@@ -85,7 +85,7 @@ body {
   margin-left: 15px;
 
   background-color: black;
-  color: #B4975A;
+  color: #d7bb7f;
 
   padding-top: 10px;
   padding-left: 30px;
