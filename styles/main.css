@@ -42,6 +42,11 @@ body {
   border: 1px solid rgb(150, 150, 150);
 }
 
+.Left-header img {
+  height: 100px;
+  width: auto;
+}
+
 .button-row {
   text-align: center;
 }
