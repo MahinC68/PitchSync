@@ -32,6 +32,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: black;
 
   height: 50px;
 
@@ -43,7 +44,7 @@ body {
 }
 
 .Left-header img {
-  height: 100px;
+  height: 70px;
   width: auto;
 }
 
@@ -59,7 +60,7 @@ body {
   margin-left: 15px;
 
   background-color: black;
-  color: rgb(209, 182, 32);
+  color: #B4975A;
 
   padding-top: 10px;
   padding-left: 30px;
