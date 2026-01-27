@@ -1,22 +1,234 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <link rel="stylesheet" href="../schedule/main.css">
-    <title>
-      Schedule
-    </title>
-  </head>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="../styles/main.css">
+  <!-- Add schedule CSS AFTER main.css -->
+  <link rel="stylesheet" href="../styles/schedule.css">
+
+  <title>PitchSync — Schedule</title>
+</head>
 
 <body>
-  <div class="side-panel">
-    <div class="nav-bar">
-      <nav>
-        <a href="#">Schedule</a>
-        <a href="#">Standings</a>
-        <a href="#">Player Leaderboard</a>
-      </nav>
-    </div>
+  <div class="page">
+
+    <!-- Navbar -->
+    <nav class="header">
+      <div class="Left-header">
+        <img src="../icons/pitchsync-new-gold.png" alt="PitchSync logo">
+      </div>
+
+      <div class="Right-header" onclick="window.location.href='./index.html'">
+        <img src="../icons/login-gold.png" title="Home" alt="Home">
+      </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="schedule-layout">
+
+      <!-- Left: Schedule list -->
+      <section class="schedule-card">
+        <div class="schedule-top">
+          <div>
+            <h1 class="schedule-title">Schedule</h1>
+            <p class="schedule-subtitle">View upcoming matches, locations, and kickoff times.</p>
+          </div>
+
+          <div class="schedule-actions">
+            <button class="pill-btn active">Upcoming</button>
+            <button class="pill-btn">Results</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <div class="field">
+            <label>Week</label>
+            <select>
+              <option>Week 1</option>
+              <option>Week 2</option>
+              <option>Week 3</option>
+              <option>Week 4</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Division</label>
+            <select>
+              <option>All</option>
+              <option>Division A</option>
+              <option>Division B</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Team</label>
+            <input type="text" placeholder="Search team name..." />
+          </div>
+
+          <button class="gold-btn">Apply</button>
+        </div>
+
+        <!-- Day group -->
+        <div class="day-group">
+          <div class="day-header">
+            <span class="day-dot"></span>
+            <h2>Sat, Feb 7</h2>
+          </div>
+
+          <div class="match-row">
+            <div class="match-time">
+              <span class="time">6:30 PM</span>
+              <span class="field-name">Field 2</span>
+            </div>
+
+            <div class="match-main">
+              <div class="teams">
+                <div class="team">
+                  <span class="badge">HOME</span>
+                  <span class="team-name">Falcons</span>
+                </div>
+                <span class="vs">vs</span>
+                <div class="team">
+                  <span class="badge away">AWAY</span>
+                  <span class="team-name">Rovers</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <span class="chip">Division A</span>
+                <span class="chip">Regular Season</span>
+                <span class="chip muted">Ref: TBA</span>
+              </div>
+            </div>
+
+            <button class="row-btn">Details</button>
+          </div>
+
+          <div class="match-row">
+            <div class="match-time">
+              <span class="time">8:00 PM</span>
+              <span class="field-name">Field 1</span>
+            </div>
+
+            <div class="match-main">
+              <div class="teams">
+                <div class="team">
+                  <span class="badge">HOME</span>
+                  <span class="team-name">Kings</span>
+                </div>
+                <span class="vs">vs</span>
+                <div class="team">
+                  <span class="badge away">AWAY</span>
+                  <span class="team-name">United</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <span class="chip">Division B</span>
+                <span class="chip">Regular Season</span>
+                <span class="chip muted">Ref: TBA</span>
+              </div>
+            </div>
+
+            <button class="row-btn">Details</button>
+          </div>
+        </div>
+
+        <!-- Day group -->
+        <div class="day-group">
+          <div class="day-header">
+            <span class="day-dot"></span>
+            <h2>Sun, Feb 8</h2>
+          </div>
+
+          <div class="match-row">
+            <div class="match-time">
+              <span class="time">5:15 PM</span>
+              <span class="field-name">Field 3</span>
+            </div>
+
+            <div class="match-main">
+              <div class="teams">
+                <div class="team">
+                  <span class="badge">HOME</span>
+                  <span class="team-name">Strikers</span>
+                </div>
+                <span class="vs">vs</span>
+                <div class="team">
+                  <span class="badge away">AWAY</span>
+                  <span class="team-name">City</span>
+                </div>
+              </div>
+
+              <div class="meta">
+                <span class="chip">Division A</span>
+                <span class="chip">Regular Season</span>
+                <span class="chip muted">Ref: TBA</span>
+              </div>
+            </div>
+
+            <button class="row-btn">Details</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Sidebar -->
+      <aside class="side-stack">
+
+        <div class="side-card">
+          <h3 class="side-title">Next Match</h3>
+
+          <div class="next-match">
+            <div class="nm-top">
+              <span class="nm-date">Sat, Feb 7</span>
+              <span class="nm-time">6:30 PM</span>
+            </div>
+
+            <div class="nm-teams">
+              <div class="nm-team">Falcons</div>
+              <div class="nm-vs">vs</div>
+              <div class="nm-team">Rovers</div>
+            </div>
+
+            <div class="nm-meta">
+              <div class="nm-item">
+                <span class="nm-label">Location</span>
+                <span class="nm-value">Field 2</span>
+              </div>
+              <div class="nm-item">
+                <span class="nm-label">Division</span>
+                <span class="nm-value">Division A</span>
+              </div>
+            </div>
+
+            <button class="black-btn">Open Match</button>
+          </div>
+        </div>
+
+        <div class="side-card">
+          <h3 class="side-title">Quick Actions</h3>
+
+          <div class="quick-actions">
+            <button class="mini-action">Add Match</button>
+            <button class="mini-action">Export CSV</button>
+            <button class="mini-action">Notify Teams</button>
+          </div>
+
+          <p class="side-hint">These can become real actions later when you hook up JS.</p>
+        </div>
+
+      </aside>
+
+    </main>
   </div>
 </body>
 </html>
