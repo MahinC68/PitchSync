@@ -1,18 +1,104 @@
-/* Uses your existing :root variables from main.css */
+.page {
+  min-height: 100vh;
+  padding-top: 0;
+  padding-left: 96px;
+}
+
+.header {
+  position: fixed;
+  top: 50%;
+  left: 34px;
+  transform: translateY(-50%);
+
+  width: 48px;
+  height: 340px;
+
+  padding: 12px 8px;
+  border-radius: 999px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.12s ease;
+
+}
+
+
+.header:hover {
+  transform: translateY(-50%) scale(1.06);
+
+  border-color: rgba(180, 151, 90, 0.35);
+
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(180, 151, 90, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+
+
+.Left-header img {
+  height: 22px;
+  width: auto;
+  opacity: 0.85;
+}
+
+.Right-header {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 999px;
+
+  background: rgba(180, 151, 90, 0.10);
+  border: 1px solid rgba(180, 151, 90, 0.30);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 6px 14px rgba(0, 0, 0, 0.25);
+
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.Right-header:hover {
+  transform: translateY(-1px);
+  background: rgba(180, 151, 90, 0.18);
+}
+
+.Right-header img {
+  height: 14px;
+  width: auto;
+}
+
+
+
 
 .schedule-layout {
   width: min(1100px, calc(100% - 48px));
   margin: 0 auto;
-
   display: grid;
   grid-template-columns: 1.35fr 0.65fr;
   gap: 22px;
-
   padding: 28px 0 72px;
   animation: fadeUp 0.7s ease-out;
 }
 
-/* Main card */
 .schedule-card {
   background: var(--card);
   border: 1px solid var(--card-border);
@@ -59,7 +145,9 @@
   font-weight: 600;
 }
 
-.pill-btn:hover { transform: translateY(-1px); }
+.pill-btn:hover {
+  transform: translateY(-1px);
+}
 
 .pill-btn.active {
   background: #000;
@@ -68,7 +156,6 @@
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* Filters */
 .filters {
   margin-top: 16px;
   display: grid;
@@ -95,6 +182,12 @@
   border: 1px solid rgba(0, 0, 0, 0.12);
   background: rgba(255, 255, 255, 0.72);
   outline: none;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.82);
+}
+
+.field input::placeholder {
+  color: rgba(0, 0, 0, 0.45);
 }
 
 .field select:focus,
@@ -103,7 +196,6 @@
   border-color: rgba(180, 151, 90, 0.55);
 }
 
-/* Buttons */
 .gold-btn {
   padding: 11px 14px;
   border-radius: 12px;
@@ -113,12 +205,18 @@
   font-weight: 800;
   cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s, opacity 0.15s;
+  font-family: inherit;
 }
 
 .gold-btn:hover {
   transform: translateY(-1px);
   background: rgba(180, 151, 90, 0.22);
   box-shadow: 0 14px 26px rgba(0, 0, 0, 0.10);
+}
+
+.gold-btn:active {
+  transform: translateY(0px);
+  opacity: 0.92;
 }
 
 .black-btn {
@@ -132,10 +230,17 @@
   font-weight: 800;
   cursor: pointer;
   transition: transform 0.15s, opacity 0.15s;
+  font-family: inherit;
 }
 
-.black-btn:hover { transform: translateY(-1px); }
-.black-btn:active { transform: translateY(0px); opacity: 0.92; }
+.black-btn:hover {
+  transform: translateY(-1px);
+}
+
+.black-btn:active {
+  transform: translateY(0px);
+  opacity: 0.92;
+}
 
 .row-btn {
   padding: 10px 12px;
@@ -144,13 +249,25 @@
   background: rgba(255, 255, 255, 0.70);
   cursor: pointer;
   font-weight: 700;
-  transition: transform 0.15s, opacity 0.15s;
+  transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.82);
 }
 
-.row-btn:hover { transform: translateY(-1px); }
-.row-btn:active { transform: translateY(0px); opacity: 0.92; }
+.row-btn:hover {
+  transform: translateY(-1px);
+}
 
-/* Day group + rows */
+.row-btn:active {
+  transform: translateY(0px);
+  opacity: 0.92;
+}
+
+.row-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(180, 151, 90, 0.22);
+}
+
 .day-group {
   padding-top: 16px;
 }
@@ -183,7 +300,6 @@
   grid-template-columns: 140px 1fr auto;
   gap: 14px;
   align-items: center;
-
   padding: 14px 14px;
   border-radius: 18px;
   border: 1px solid rgba(0, 0, 0, 0.07);
@@ -203,6 +319,10 @@
   margin-top: 4px;
   color: var(--muted);
   font-size: 12px;
+}
+
+.match-main {
+  min-width: 0;
 }
 
 .teams {
@@ -262,7 +382,6 @@
   color: rgba(0, 0, 0, 0.55);
 }
 
-/* Sidebar */
 .side-stack {
   display: flex;
   flex-direction: column;
@@ -299,8 +418,13 @@
   font-weight: 800;
 }
 
-.nm-date { color: rgba(0, 0, 0, 0.72); }
-.nm-time { color: rgba(0, 0, 0, 0.90); }
+.nm-date {
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.nm-time {
+  color: rgba(0, 0, 0, 0.90);
+}
 
 .nm-teams {
   margin-top: 12px;
@@ -365,11 +489,24 @@
   background: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   font-weight: 800;
-  transition: transform 0.15s, opacity 0.15s;
+  transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+  color: rgba(0, 0, 0, 0.82);
 }
 
-.mini-action:hover { transform: translateY(-1px); }
-.mini-action:active { transform: translateY(0px); opacity: 0.92; }
+.mini-action:hover {
+  transform: translateY(-1px);
+}
+
+.mini-action:active {
+  transform: translateY(0px);
+  opacity: 0.92;
+}
+
+.mini-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(180, 151, 90, 0.22);
+}
 
 .side-hint {
   margin: 10px 2px 0;
@@ -377,8 +514,23 @@
   color: var(--muted);
 }
 
-/* Responsive */
 @media (max-width: 980px) {
+  .header {
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(960px, calc(100% - 40px));
+    height: 56px;
+    padding: 0 28px;
+    border-radius: 999px;
+    flex-direction: row;
+  }
+
+  .page {
+    padding-left: 0;
+    padding-top: 104px;
+  }
+
   .schedule-layout {
     grid-template-columns: 1fr;
   }
@@ -408,5 +560,9 @@
 
   .row-btn {
     width: 100%;
+  }
+
+  .nm-meta {
+    grid-template-columns: 1fr;
   }
 }
