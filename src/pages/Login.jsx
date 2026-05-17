@@ -123,7 +123,7 @@ export default function Login() {
                   placeholder="••••••••"
                   autoComplete="current-password"
                 />
-                <a href="#" className={styles.forgotLink}>Forgot password?</a>
+                <Link to="/forgot-password" className={styles.forgotLink}>Forgot password?</Link>
               </div>
               <button type="submit" className={styles.btnSubmit}>
                 Login
