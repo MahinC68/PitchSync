@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styles from './Home.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
 
@@ -177,7 +178,7 @@ export default function Home() {
 
       <nav className={styles.nav}>
         <img src={logo} alt="PitchSync" className={styles.logo} />
-        <button className={styles.loginBtn}>Login</button>
+        <Link to="/login" className={styles.loginBtn}>Login</Link>
       </nav>
 
       <section className={styles.hero}>
@@ -208,8 +209,8 @@ export default function Home() {
               </h1>
 
               <div className={styles.actions}>
-                <button className={styles.btnPlayer}>Player</button>
-                <button className={styles.btnAdmin}>Admin</button>
+                <Link to="/login?tab=player" className={styles.btnPlayer}>Player</Link>
+                <Link to="/login?tab=admin" className={styles.btnAdmin}>Admin</Link>
               </div>
             </div>
 
