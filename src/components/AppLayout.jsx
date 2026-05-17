@@ -37,6 +37,18 @@ const NAV = [
       </svg>
     ),
   },
+  {
+    to: '/settings',
+    label: 'Settings',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <line x1="1" y1="4"  x2="14" y2="4"  stroke="currentColor" strokeWidth="1" />
+        <line x1="1" y1="11" x2="14" y2="11" stroke="currentColor" strokeWidth="1" />
+        <circle cx="5"  cy="4"  r="1.5" stroke="currentColor" strokeWidth="1" />
+        <circle cx="10" cy="11" r="1.5" stroke="currentColor" strokeWidth="1" />
+      </svg>
+    ),
+  },
 ]
 
 export default function AppLayout({ children }) {

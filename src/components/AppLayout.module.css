@@ -1,6 +1,7 @@
 .shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background-color: var(--color-bg);
   background-image:
     linear-gradient(rgba(180, 151, 90, 0.028) 1px, transparent 1px),
@@ -97,5 +98,6 @@
 .content {
   margin-left: calc(200px + 32px);
   flex: 1;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
 }
