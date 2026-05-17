@@ -2,59 +2,52 @@
 .root {
   min-height: 100vh;
   background-color: var(--color-bg);
-  /* Very faint gold grid lines for depth */
   background-image:
     linear-gradient(rgba(180, 151, 90, 0.028) 1px, transparent 1px),
     linear-gradient(90deg, rgba(180, 151, 90, 0.028) 1px, transparent 1px);
   background-size: 80px 80px;
 }
 
-/* ─── Navbar ─────────────────────────────────────────────────────────────── */
+/* ─── Navbar — flat full-width bar ──────────────────────────────────────── */
 .nav {
   position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  width: min(960px, calc(100% - 40px));
-  height: 56px;
-  padding: 0 28px;
+  height: 60px;
+  padding: 0 clamp(24px, 4vw, 60px);
 
-  background: rgba(8, 8, 8, 0.82);
-  border: 1px solid rgba(180, 151, 90, 0.38);
-  border-radius: 999px;
+  background: rgba(6, 6, 6, 0.9);
+  border-radius: 0;
+  border-bottom: 1px solid rgba(180, 151, 90, 0.25);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-
-  /* floating gold glow beneath */
-  box-shadow:
-    inset 0 1px 0 rgba(180, 151, 90, 0.12),
-    0 8px 32px rgba(0, 0, 0, 0.65),
-    0 20px 60px rgba(180, 151, 90, 0.07),
-    0 0 0 0.5px rgba(180, 151, 90, 0.1);
+  box-shadow: 0 1px 32px rgba(0, 0, 0, 0.55);
 }
 
 .logo {
-  height: 34px;
+  height: 32px;
   width: auto;
+  display: block;
 }
 
 .loginBtn {
   font-family: var(--font);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: var(--fw-light);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-gold);
 
-  padding: 8px 20px;
+  padding: 7px 20px;
   background: transparent;
-  border: 1px solid rgba(180, 151, 90, 0.5);
+  border: 1px solid rgba(180, 151, 90, 0.45);
   border-radius: 0;
   cursor: pointer;
   transition:
@@ -68,23 +61,65 @@
   background: var(--color-gold);
   color: #000;
   border-color: var(--color-gold);
-  box-shadow: 0 0 16px rgba(180, 151, 90, 0.35);
+  box-shadow: 0 0 14px rgba(180, 151, 90, 0.3);
 }
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
 .hero {
+  position: relative;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Equal vertical padding centres frame at ~50vh; horizontal makes room for geometry */
+  padding: 100px clamp(110px, 11vw, 145px);
+}
+
+/* Bordered rectangle that contains the pitch watermark */
+.heroFrame {
+  position: relative;
+  flex: 1;
+  max-width: 1180px;
+  background: var(--color-bg);
+  border: 1px solid rgba(180, 151, 90, 0.22);
+  box-shadow:
+    0 0 80px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(180, 151, 90, 0.04);
+  padding: var(--sp-16) var(--sp-12);
+}
+
+/* Clips the pitch SVG to the frame without clipping the 3-D card */
+.pitchClip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Pitch SVG — fills .pitchClip which clips it to the frame border */
+.pitchSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content grid — sits above the pitch, fills heroFrame */
+.heroInner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
   gap: var(--sp-16);
-
-  width: min(1100px, calc(100% - 48px));
-  margin: 0 auto;
-  padding-top: 88px;
-  padding-bottom: var(--sp-12);
 }
 
+/* Hero text column */
 .heroText {
   position: relative;
   display: flex;
@@ -110,16 +145,10 @@
   z-index: 0;
 }
 
-/* Push all siblings in heroText above the glow */
-.eyebrow,
-.title,
-.actions {
-  position: relative;
-  z-index: 1;
-}
-
 /* ─── Eyebrow ────────────────────────────────────────────────────────────── */
 .eyebrow {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: var(--sp-4);
@@ -143,7 +172,9 @@
 
 /* ─── Title ──────────────────────────────────────────────────────────────── */
 .title {
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  position: relative;
+  z-index: 1;
+  font-size: clamp(2.2rem, 4.8vw, 3.5rem);
   font-weight: var(--fw-light);
   line-height: 1.1;
   letter-spacing: -0.025em;
@@ -156,9 +187,10 @@
 
 /* ─── Buttons ────────────────────────────────────────────────────────────── */
 .actions {
+  position: relative;
+  z-index: 1;
   display: flex;
   gap: var(--sp-4);
-  margin-top: var(--sp-2);
 }
 
 .btnPlayer,
@@ -168,7 +200,7 @@
   font-weight: var(--fw-light);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  padding: 14px 32px;
+  padding: 15px 36px;
   border-radius: 0;
   cursor: pointer;
 }
@@ -230,7 +262,26 @@
   outline-offset: 3px;
 }
 
-/* ─── Hero graphic ───────────────────────────────────────────────────────── */
+/* ─── Side geometry ──────────────────────────────────────────────────────── */
+.geomLeft {
+  position: absolute;
+  left: clamp(10px, 1.5vw, 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.geomRight {
+  position: absolute;
+  right: clamp(10px, 1.5vw, 24px);
+  top: 50%;
+  transform: translateY(-50%) scaleX(-1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ─── Hero graphic column ────────────────────────────────────────────────── */
 .heroGraphic {
   display: flex;
   align-items: center;
@@ -265,7 +316,6 @@
   transform: perspective(1000px) rotateY(-4deg) rotateX(1deg);
 }
 
-/* Card header */
 .previewHead {
   display: flex;
   align-items: center;
@@ -290,7 +340,6 @@
   color: var(--color-gold);
 }
 
-/* Table row layout */
 .tableRow {
   display: grid;
   grid-template-columns: 22px 1fr 26px 26px 26px 30px 52px;
@@ -300,7 +349,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* Column header row */
 .tableHeader {
   background: #111;
   padding-top: 7px;
@@ -320,59 +368,21 @@
   text-align: left;
 }
 
-/* First-place row accent */
 .tableRowTop {
   background: rgba(180, 151, 90, 0.055);
   border-left: 2px solid rgba(180, 151, 90, 0.55);
   padding-left: 14px;
 }
 
-/* Individual cell types */
-.cPos {
-  font-size: 0.625rem;
-  font-weight: var(--fw-light);
-  color: var(--color-text-muted);
-  text-align: center;
-}
+.cPos  { font-size: 0.625rem;  font-weight: var(--fw-light);   color: var(--color-text-muted); text-align: center; }
+.cTeam { font-size: 0.6875rem; font-weight: var(--fw-regular);  color: var(--color-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cNum  { font-size: 0.625rem;  font-weight: var(--fw-light);   color: var(--color-text-muted); text-align: center; }
+.cPts  { font-size: 0.6875rem; font-weight: var(--fw-regular);  color: var(--color-text-muted); text-align: center; }
+.cForm { display: flex; gap: 3px; justify-content: center; align-items: center; }
 
-.cTeam {
-  font-size: 0.6875rem;
-  font-weight: var(--fw-regular);
-  color: var(--color-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.textGold { color: var(--color-gold); }
 
-.cNum {
-  font-size: 0.625rem;
-  font-weight: var(--fw-light);
-  color: var(--color-text-muted);
-  text-align: center;
-}
-
-.cPts {
-  font-size: 0.6875rem;
-  font-weight: var(--fw-regular);
-  color: var(--color-text-muted);
-  text-align: center;
-}
-
-.cForm {
-  display: flex;
-  gap: 3px;
-  justify-content: center;
-  align-items: center;
-}
-
-.textGold {
-  color: var(--color-gold);
-}
-
-/* Form badges */
-.badgeW,
-.badgeD,
-.badgeL {
+.badgeW, .badgeD, .badgeL {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -385,9 +395,8 @@
 
 .badgeW { background: rgba(180, 151, 90, 0.22); color: #c9a96e; }
 .badgeD { background: rgba(255, 255, 255, 0.07); color: #666; }
-.badgeL { background: rgba(160, 55, 55, 0.22); color: #c06060; }
+.badgeL { background: rgba(160, 55, 55, 0.22);  color: #c06060; }
 
-/* Card footer */
 .previewFoot {
   display: flex;
   align-items: center;
@@ -413,22 +422,28 @@
   color: var(--color-gold);
 }
 
-/* ─── Feature cards ──────────────────────────────────────────────────────── */
+/* ─── Features section ───────────────────────────────────────────────────── */
 .features {
+  width: min(1100px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: var(--sp-16) 0;
+  border-top: 1px solid rgba(180, 151, 90, 0.08);
+}
+
+.featuresHeader {
+  margin-bottom: var(--sp-8);
+}
+
+.featuresGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--sp-6);
-
-  width: min(1100px, calc(100% - 48px));
-  margin: 0 auto;
-  padding: var(--sp-4) 0 var(--sp-16);
 }
 
 .card {
   display: flex;
   flex-direction: column;
   gap: var(--sp-4);
-
   padding: var(--sp-8);
   background-color: var(--color-surface);
   border: 1px solid rgba(180, 151, 90, 0.22);
@@ -440,10 +455,7 @@
   border-color: rgba(180, 151, 90, 0.5);
 }
 
-.cardIcon {
-  display: flex;
-  align-items: center;
-}
+.cardIcon  { display: flex; align-items: center; }
 
 .cardTitle {
   font-size: 0.875rem;
@@ -459,18 +471,7 @@
   color: var(--color-text-muted);
 }
 
-/* ─── How It Works ───────────────────────────────────────────────────────── */
-.howItWorks {
-  width: min(1100px, calc(100% - 48px));
-  margin: 0 auto;
-  padding: var(--sp-16) 0 var(--sp-20);
-  border-top: 1px solid rgba(180, 151, 90, 0.1);
-}
-
-.howHeader {
-  margin-bottom: var(--sp-12);
-}
-
+/* ─── Shared section eyebrow ─────────────────────────────────────────────── */
 .sectionEyebrow {
   display: flex;
   align-items: center;
@@ -480,6 +481,18 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-gold);
+}
+
+/* ─── How It Works ───────────────────────────────────────────────────────── */
+.howItWorks {
+  width: min(1100px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: var(--sp-16) 0 var(--sp-20);
+  border-top: 1px solid rgba(180, 151, 90, 0.08);
+}
+
+.howHeader {
+  margin-bottom: var(--sp-12);
 }
 
 .steps {
@@ -527,7 +540,6 @@
   width: min(1100px, calc(100% - 48px));
   margin: 0 auto;
   padding: var(--sp-8) 0 var(--sp-12);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -538,11 +550,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
+  align-items: flex-start;
 }
 
 .footerLogo {
   height: 26px;
   width: auto;
+  display: block;
   opacity: 0.8;
 }
 
@@ -562,13 +576,26 @@
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 1200px) {
+  .geomLeft,
+  .geomRight { display: none; }
+
+  .hero {
+    padding-left: clamp(20px, 4vw, 48px);
+    padding-right: clamp(20px, 4vw, 48px);
+  }
+}
+
 @media (max-width: 900px) {
   .hero {
-    grid-template-columns: 1fr;
-    min-height: auto;
-    padding-top: 96px;
+    align-items: flex-start;
     padding-bottom: var(--sp-16);
+  }
+
+  .heroInner {
+    grid-template-columns: 1fr;
     gap: var(--sp-12);
+    padding-top: var(--sp-4);
   }
 
   .heroGraphic {
@@ -584,7 +611,7 @@
     transform: none;
   }
 
-  .features {
+  .featuresGrid {
     grid-template-columns: 1fr;
     gap: var(--sp-4);
   }
