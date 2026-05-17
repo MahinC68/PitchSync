@@ -8,31 +8,33 @@
   background-size: 80px 80px;
 }
 
-/* ─── Navbar — flat full-width bar ──────────────────────────────────────── */
+/* ─── Navbar — floating bar ──────────────────────────────────────────────── */
 .nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 14px;
+  left: 20px;
+  right: 20px;
   z-index: 100;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  height: 60px;
-  padding: 0 clamp(24px, 4vw, 60px);
+  height: 56px;
+  padding: 0 clamp(20px, 3vw, 40px);
 
-  background: rgba(6, 6, 6, 0.9);
-  border-radius: 0;
-  border-bottom: 1px solid rgba(180, 151, 90, 0.25);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  box-shadow: 0 1px 32px rgba(0, 0, 0, 0.55);
+  background: rgba(8, 8, 8, 0.78);
+  border: 1px solid rgba(180, 151, 90, 0.18);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(180, 151, 90, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .logo {
-  height: 32px;
+  height: 30px;
   width: auto;
   display: block;
 }
@@ -41,13 +43,13 @@
   font-family: var(--font);
   font-size: 0.625rem;
   font-weight: var(--fw-light);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-gold);
 
-  padding: 7px 20px;
-  background: transparent;
-  border: 1px solid rgba(180, 151, 90, 0.45);
+  padding: 8px 20px;
+  background: rgba(180, 151, 90, 0.06);
+  border: 1px solid rgba(180, 151, 90, 0.35);
   border-radius: 0;
   cursor: pointer;
   transition:
@@ -61,7 +63,7 @@
   background: var(--color-gold);
   color: #000;
   border-color: var(--color-gold);
-  box-shadow: 0 0 14px rgba(180, 151, 90, 0.3);
+  box-shadow: 0 0 18px rgba(180, 151, 90, 0.35);
 }
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
