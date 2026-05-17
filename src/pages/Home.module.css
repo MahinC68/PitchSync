@@ -1,4 +1,3 @@
-/* ─── Root + background depth ────────────────────────────────────────────── */
 .root {
   min-height: 100vh;
   background-color: var(--color-bg);
@@ -8,7 +7,7 @@
   background-size: 80px 80px;
 }
 
-/* ─── Navbar — floating bar ──────────────────────────────────────────────── */
+/* nav */
 .nav {
   position: fixed;
   top: 14px;
@@ -66,18 +65,17 @@
   box-shadow: 0 0 18px rgba(180, 151, 90, 0.35);
 }
 
-/* ─── Hero ───────────────────────────────────────────────────────────────── */
+/* hero */
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Equal vertical padding centres frame at ~50vh; horizontal makes room for geometry */
+  /* equal vertical padding keeps heroFrame vertically centered */
   padding: 100px clamp(110px, 11vw, 145px);
 }
 
-/* Bordered rectangle that contains the pitch watermark */
 .heroFrame {
   position: relative;
   flex: 1;
@@ -90,7 +88,7 @@
   padding: var(--sp-16) var(--sp-12);
 }
 
-/* Clips the pitch SVG to the frame without clipping the 3-D card */
+/* overflow:hidden isolated here so the 3D card in heroInner isn't clipped */
 .pitchClip {
   position: absolute;
   inset: 0;
@@ -99,7 +97,6 @@
   z-index: 0;
 }
 
-/* Pitch SVG — fills .pitchClip which clips it to the frame border */
 .pitchSvg {
   position: absolute;
   inset: 0;
@@ -110,7 +107,6 @@
   z-index: 0;
 }
 
-/* Content grid — sits above the pitch, fills heroFrame */
 .heroInner {
   position: relative;
   z-index: 1;
@@ -121,7 +117,6 @@
   gap: var(--sp-16);
 }
 
-/* Hero text column */
 .heroText {
   position: relative;
   display: flex;
@@ -129,7 +124,6 @@
   gap: var(--sp-8);
 }
 
-/* Radial gold glow behind text */
 .heroGlow {
   position: absolute;
   top: 50%;
@@ -147,7 +141,6 @@
   z-index: 0;
 }
 
-/* ─── Eyebrow ────────────────────────────────────────────────────────────── */
 .eyebrow {
   position: relative;
   z-index: 1;
@@ -172,7 +165,6 @@
   color: var(--color-gold);
 }
 
-/* ─── Title ──────────────────────────────────────────────────────────────── */
 .title {
   position: relative;
   z-index: 1;
@@ -187,7 +179,6 @@
   color: var(--color-gold);
 }
 
-/* ─── Buttons ────────────────────────────────────────────────────────────── */
 .actions {
   position: relative;
   z-index: 1;
@@ -207,7 +198,7 @@
   cursor: pointer;
 }
 
-/* Player — gradient + shimmer */
+/* shimmer via ::after sliding across on hover */
 .btnPlayer {
   position: relative;
   overflow: hidden;
@@ -239,7 +230,6 @@
     0 0 60px rgba(180, 151, 90, 0.22);
 }
 
-/* Admin — outline, glows + fills on hover */
 .btnAdmin {
   background: transparent;
   color: var(--color-gold);
@@ -264,7 +254,13 @@
   outline-offset: 3px;
 }
 
-/* ─── Side geometry ──────────────────────────────────────────────────────── */
+.heroGraphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* dot grids — CSS mask handles the fade, gradient direction mirrors per side */
 .geomLeft {
   position: absolute;
   left: clamp(10px, 1.5vw, 24px);
@@ -272,25 +268,22 @@
   transform: translateY(-50%);
   z-index: 1;
   pointer-events: none;
+  mask-image: linear-gradient(to right, black 0%, black 25%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 25%, transparent 100%);
 }
 
 .geomRight {
   position: absolute;
   right: clamp(10px, 1.5vw, 24px);
   top: 50%;
-  transform: translateY(-50%) scaleX(-1);
+  transform: translateY(-50%);
   z-index: 1;
   pointer-events: none;
+  mask-image: linear-gradient(to left, black 0%, black 25%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, black 0%, black 25%, transparent 100%);
 }
 
-/* ─── Hero graphic column ────────────────────────────────────────────────── */
-.heroGraphic {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ─── Standings preview card ─────────────────────────────────────────────── */
+/* standings preview */
 .previewWrap {
   width: 100%;
   display: flex;
@@ -424,7 +417,7 @@
   color: var(--color-gold);
 }
 
-/* ─── Features section ───────────────────────────────────────────────────── */
+/* features */
 .features {
   width: min(1100px, calc(100% - 48px));
   margin: 0 auto;
@@ -473,7 +466,6 @@
   color: var(--color-text-muted);
 }
 
-/* ─── Shared section eyebrow ─────────────────────────────────────────────── */
 .sectionEyebrow {
   display: flex;
   align-items: center;
@@ -485,7 +477,7 @@
   color: var(--color-gold);
 }
 
-/* ─── How It Works ───────────────────────────────────────────────────────── */
+/* how it works */
 .howItWorks {
   width: min(1100px, calc(100% - 48px));
   margin: 0 auto;
@@ -532,7 +524,7 @@
   color: var(--color-text-muted);
 }
 
-/* ─── Footer ─────────────────────────────────────────────────────────────── */
+/* footer */
 .footer {
   border-top: 1px solid rgba(180, 151, 90, 0.1);
   margin-top: var(--sp-4);
@@ -577,7 +569,7 @@
   letter-spacing: 0.02em;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
+/* responsive */
 @media (max-width: 1200px) {
   .geomLeft,
   .geomRight { display: none; }
