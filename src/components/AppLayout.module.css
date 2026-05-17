@@ -1,0 +1,101 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(rgba(180, 151, 90, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 151, 90, 0.028) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* floating vertical pill */
+.sidebar {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  bottom: 16px;
+  width: 200px;
+  z-index: 50;
+
+  display: flex;
+  flex-direction: column;
+
+  background: rgba(8, 8, 8, 0.88);
+  border: 1px solid rgba(180, 151, 90, 0.15);
+  border-radius: 10px;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(180, 151, 90, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  padding: var(--sp-6);
+}
+
+.sideTop {
+  padding-bottom: var(--sp-6);
+  border-bottom: 1px solid rgba(180, 151, 90, 0.1);
+}
+
+.sideLogo {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
+.sideNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  margin-top: var(--sp-6);
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 9px var(--sp-3);
+  text-decoration: none;
+  color: var(--color-text-subtle);
+  font-family: var(--font);
+  font-size: 0.6875rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition:
+    color var(--ease-fast),
+    background-color var(--ease-fast),
+    border-color var(--ease-fast);
+}
+
+.navItem:hover {
+  color: var(--color-text-muted);
+  background: rgba(180, 151, 90, 0.05);
+}
+
+.navItemActive {
+  color: var(--color-gold);
+  background: rgba(180, 151, 90, 0.1);
+  border-color: rgba(180, 151, 90, 0.2);
+}
+
+.navIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.navLabel {
+  flex: 1;
+}
+
+/* main content — offset from fixed sidebar */
+.content {
+  margin-left: calc(200px + 32px);
+  flex: 1;
+  min-height: 100vh;
+}
