@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import styles from './Login.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
+import { login, verifyCode, saveSession } from '../api'
 
-// duplicated from Home — extract to shared component when more pages need it
 function SoccerPitch() {
   return (
     <svg
@@ -40,9 +40,51 @@ function SoccerPitch() {
 }
 
 export default function Login() {
-  const [searchParams] = useSearchParams()
-  const initialTab = searchParams.get('tab') === 'admin' ? 'admin' : 'player'
-  const [tab, setTab] = useState(initialTab)
+  const [searchParams]  = useSearchParams()
+  const navigate        = useNavigate()
+  const initialTab      = searchParams.get('tab') === 'admin' ? 'admin' : 'player'
+
+  const [tab,        setTab]        = useState(initialTab)
+  const [accessCode, setAccessCode] = useState('')
+  const [email,      setEmail]      = useState('')
+  const [password,   setPassword]   = useState('')
+  const [loading,    setLoading]    = useState(false)
+  const [error,      setError]      = useState('')
+
+  function switchTab(next) {
+    setTab(next)
+    setError('')
+  }
+
+  async function handlePlayerSubmit(e) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      const { leagueId, leagueName } = await verifyCode(accessCode)
+      saveSession({ role: 'player', leagueId, leagueName })
+      navigate('/standings')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleAdminSubmit(e) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      const { token, league } = await login(email, password)
+      saveSession({ role: 'admin', token, leagueId: league.id, leagueName: league.name })
+      navigate('/standings')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className={styles.root}>
@@ -73,20 +115,26 @@ export default function Login() {
           <div className={styles.tabs}>
             <button
               className={`${styles.tab} ${tab === 'player' ? styles.tabActive : ''}`}
-              onClick={() => setTab('player')}
+              onClick={() => switchTab('player')}
             >
               Player
             </button>
             <button
               className={`${styles.tab} ${tab === 'admin' ? styles.tabActive : ''}`}
-              onClick={() => setTab('admin')}
+              onClick={() => switchTab('admin')}
             >
               Admin
             </button>
           </div>
 
+          {error && (
+            <p style={{ color: '#c06060', fontSize: '0.75rem', margin: '-16px 0 8px', lineHeight: 1.4 }}>
+              {error}
+            </p>
+          )}
+
           {tab === 'player' ? (
-            <form className={styles.form} onSubmit={e => e.preventDefault()}>
+            <form className={styles.form} onSubmit={handlePlayerSubmit}>
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="accessCode">League Access Code</label>
                 <input
@@ -96,14 +144,16 @@ export default function Login() {
                   placeholder="Paste your code here"
                   autoComplete="off"
                   spellCheck="false"
+                  value={accessCode}
+                  onChange={e => setAccessCode(e.target.value)}
                 />
               </div>
-              <button type="submit" className={styles.btnSubmit}>
-                Join League
+              <button type="submit" className={styles.btnSubmit} disabled={loading}>
+                {loading ? 'Verifying…' : 'Join League'}
               </button>
             </form>
           ) : (
-            <form className={styles.form} onSubmit={e => e.preventDefault()}>
+            <form className={styles.form} onSubmit={handleAdminSubmit}>
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="email">Email</label>
                 <input
@@ -112,6 +162,8 @@ export default function Login() {
                   className={styles.input}
                   placeholder="admin@example.com"
                   autoComplete="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                 />
               </div>
               <div className={styles.field}>
@@ -122,11 +174,13 @@ export default function Login() {
                   className={styles.input}
                   placeholder="••••••••"
                   autoComplete="current-password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                 />
                 <Link to="/forgot-password" className={styles.forgotLink}>Forgot password?</Link>
               </div>
-              <button type="submit" className={styles.btnSubmit}>
-                Login
+              <button type="submit" className={styles.btnSubmit} disabled={loading}>
+                {loading ? 'Logging in…' : 'Login'}
               </button>
             </form>
           )}

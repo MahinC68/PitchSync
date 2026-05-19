@@ -5,8 +5,13 @@ const cors    = require('cors')
 const app  = express()
 const PORT = process.env.PORT || 3001
 
+const ALLOWED_ORIGINS = new Set([
+  process.env.FRONTEND_URL || 'http://localhost:5173',
+  'http://localhost:5174',
+])
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, cb) => cb(null, !origin || ALLOWED_ORIGINS.has(origin)),
   credentials: true,
 }))
 app.use(express.json())

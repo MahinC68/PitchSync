@@ -1,8 +1,9 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import styles from './AppLayout.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
+import { getSession, clearSession } from '../api'
 
-const NAV = [
+const NAV_ITEMS = [
   {
     to: '/standings',
     label: 'Standings',
@@ -40,6 +41,7 @@ const NAV = [
   {
     to: '/settings',
     label: 'Settings',
+    adminOnly: true,
     icon: (
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
         <line x1="1" y1="4"  x2="14" y2="4"  stroke="currentColor" strokeWidth="1" />
@@ -52,6 +54,17 @@ const NAV = [
 ]
 
 export default function AppLayout({ children }) {
+  const navigate = useNavigate()
+  const session  = getSession()
+  const isAdmin  = session?.role === 'admin'
+
+  function handleLogout() {
+    clearSession()
+    navigate('/')
+  }
+
+  const visibleNav = NAV_ITEMS.filter(item => !item.adminOnly || isAdmin)
+
   return (
     <div className={styles.shell}>
 
@@ -61,7 +74,7 @@ export default function AppLayout({ children }) {
         </div>
 
         <nav className={styles.sideNav}>
-          {NAV.map(({ to, label, icon }) => (
+          {visibleNav.map(({ to, label, icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -74,6 +87,19 @@ export default function AppLayout({ children }) {
             </NavLink>
           ))}
         </nav>
+
+        <button
+          onClick={handleLogout}
+          className={styles.navItem}
+          style={{ background: 'transparent', border: '1px solid transparent', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+        >
+          <span className={styles.navIcon}>
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <path d="M6 2H2v11h4M10 10l3-3-3-3M13 7H6" stroke="currentColor" strokeWidth="1" strokeLinecap="square" />
+            </svg>
+          </span>
+          <span className={styles.navLabel}>Logout</span>
+        </button>
       </aside>
 
       <main className={styles.content}>
