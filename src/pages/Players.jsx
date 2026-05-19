@@ -12,12 +12,16 @@ export default function Players() {
   const isAdmin = session?.role === 'admin'
 
   useEffect(() => {
-    if (!session?.leagueId) {
+    const auth = JSON.parse(localStorage.getItem('pitchsync'))
+    const leagueId = auth?.LeagueId
+    console.log('leagueId:', leagueId)
+
+    if (!leagueId) {
       setError('No league found. Please log in.')
       setLoading(false)
       return
     }
-    getTopScorers(session.leagueId)
+    getTopScorers(leagueId)
       .then(setPlayers)
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))

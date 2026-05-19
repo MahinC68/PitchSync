@@ -26,12 +26,16 @@ export default function Schedule() {
   const isAdmin = session?.role === 'admin'
 
   useEffect(() => {
-    if (!session?.leagueId) {
+    const auth = JSON.parse(localStorage.getItem('pitchsync'))
+    const leagueId = auth?.LeagueId
+    console.log('leagueId:', leagueId)
+
+    if (!leagueId) {
       setError('No league found. Please log in.')
       setLoading(false)
       return
     }
-    getFixtures(session.leagueId)
+    getFixtures(leagueId)
       .then(({ upcoming, past }) => {
         setUpcoming(upcoming)
         setPast(past)

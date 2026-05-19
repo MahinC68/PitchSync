@@ -4,6 +4,20 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
+// ── GET /api/teams (admin only) ───────────────────────────────────────────────
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      'SELECT id, name FROM teams WHERE league_id = $1 ORDER BY name',
+      [req.admin.leagueId]
+    )
+    return res.json({ success: true, data: rows })
+  } catch (err) {
+    console.error('teams GET:', err.message)
+    return res.status(500).json({ success: false, error: 'Server error' })
+  }
+})
+
 // ── POST /api/teams (admin only) ──────────────────────────────────────────────
 router.post('/', authMiddleware, async (req, res) => {
   const { name } = req.body

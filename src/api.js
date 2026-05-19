@@ -123,10 +123,15 @@ export async function deletePlayer(id) {
 
 // ── Teams ─────────────────────────────────────────────────────────────────────
 
-export async function addTeam(name, leagueId) {
+export async function getTeams() {
+  const body = await apiFetch('/api/teams')
+  return body.data
+}
+
+export async function addTeam(name) {
   const body = await apiFetch('/api/teams', {
     method: 'POST',
-    body: JSON.stringify({ name, league_id: leagueId }),
+    body: JSON.stringify({ name }),
   })
   return body.data
 }
