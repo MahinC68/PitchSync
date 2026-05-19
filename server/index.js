@@ -11,19 +11,17 @@ app.use(cors({
 }))
 app.use(express.json())
 
-// ── Routes (uncomment as each file is implemented) ───────────────────────────
-// const authRoutes      = require('./routes/auth')
-// const standingsRoutes = require('./routes/standings')
-// const fixturesRoutes  = require('./routes/fixtures')
-// const playersRoutes   = require('./routes/players')
-// const teamsRoutes     = require('./routes/teams')
+const authRoutes      = require('./routes/auth')
+const standingsRoutes = require('./routes/standings')
+const fixturesRoutes  = require('./routes/fixtures')
+const playersRoutes   = require('./routes/players')
+const teamsRoutes     = require('./routes/teams')
 
-// app.use('/api/auth',      authRoutes)
-// app.use('/api/standings', standingsRoutes)
-// app.use('/api/fixtures',  fixturesRoutes)
-// app.use('/api/players',   playersRoutes)
-// app.use('/api/teams',     teamsRoutes)
-// ─────────────────────────────────────────────────────────────────────────────
+app.use('/api/auth',      authRoutes)
+app.use('/api/standings', standingsRoutes)
+app.use('/api/fixtures',  fixturesRoutes)
+app.use('/api/players',   playersRoutes)
+app.use('/api/teams',     teamsRoutes)
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
