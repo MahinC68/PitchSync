@@ -177,11 +177,14 @@ export default function Login() {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />
-                <Link to="/forgot-password" className={styles.forgotLink}>Forgot password?</Link>
               </div>
               <button type="submit" className={styles.btnSubmit} disabled={loading}>
                 {loading ? 'Logging in…' : 'Login'}
               </button>
+              <p style={{ margin: 0, textAlign: 'center', fontSize: '0.5625rem', color: 'var(--color-text-subtle)', letterSpacing: '0.1em' }}>
+                Don't have an account?{' '}
+                <Link to="/register" className={styles.forgotLink} style={{ opacity: 1 }}>Create Account</Link>
+              </p>
             </form>
           )}
 
