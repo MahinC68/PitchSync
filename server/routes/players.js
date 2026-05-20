@@ -4,6 +4,23 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
+// ── GET /api/players/team/:team_id (admin only) ───────────────────────────────
+// Must be registered before /:league_id/top-scorers to avoid param collision
+router.get('/team/:team_id', authMiddleware, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `SELECT id, name FROM players
+       WHERE  team_id = $1 AND league_id = $2
+       ORDER  BY name ASC`,
+      [req.params.team_id, req.admin.leagueId]
+    )
+    return res.json({ success: true, data: rows })
+  } catch (err) {
+    console.error('players/team GET:', err.message)
+    return res.status(500).json({ success: false, error: 'Server error' })
+  }
+})
+
 // ── GET /api/players/:league_id/top-scorers ───────────────────────────────────
 router.get('/:league_id/top-scorers', async (req, res) => {
   try {
@@ -15,7 +32,9 @@ router.get('/:league_id/top-scorers', async (req, res) => {
          COUNT(g.id) AS goals
        FROM   players p
        JOIN   teams   t ON t.id = p.team_id
-       LEFT JOIN goals g ON g.player_id = p.id
+       LEFT JOIN goals g
+         ON  g.player_id = p.id
+         AND g.match_id IN (SELECT id FROM matches WHERE league_id = $1)
        WHERE  p.league_id = $1
        GROUP BY p.id, p.name, t.name
        ORDER  BY goals DESC, p.name ASC`,

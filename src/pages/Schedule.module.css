@@ -211,8 +211,34 @@
   grid-template-columns: 150px 1fr 60px;
 }
 
+.fixtureRowAdmin {
+  grid-template-columns: 150px 1fr 60px auto;
+}
+
 .resultRow {
   grid-template-columns: 150px 1fr 60px;
+}
+
+.btnInlineResult {
+  font-family: var(--font);
+  font-size: 0.5rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  background: transparent;
+  border: 1px solid rgba(180, 151, 90, 0.3);
+  border-radius: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  justify-self: end;
+  transition: background-color var(--ease-fast), color var(--ease-fast);
+}
+
+.btnInlineResult:hover {
+  background: var(--color-gold);
+  color: #000;
 }
 
 .fixtureRow:last-child,

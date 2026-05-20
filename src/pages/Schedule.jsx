@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import AppLayout from '../components/AppLayout'
 import styles from './Schedule.module.css'
+import AddFixtureModal from '../components/AddFixtureModal'
+import AddResultModal from '../components/AddResultModal'
 import { getFixtures, getSession } from '../api'
 
 function formatDate(dateStr) {
@@ -17,32 +19,48 @@ function formatTime(timeStr) {
 }
 
 export default function Schedule() {
-  const [upcoming, setUpcoming] = useState([])
-  const [past,     setPast]     = useState([])
-  const [loading,  setLoading]  = useState(true)
-  const [error,    setError]    = useState('')
+  const [upcoming,         setUpcoming]         = useState([])
+  const [past,             setPast]             = useState([])
+  const [loading,          setLoading]          = useState(true)
+  const [error,            setError]            = useState('')
+  const [showFixtureModal, setShowFixtureModal] = useState(false)
+  const [showResultModal,  setShowResultModal]  = useState(false)
 
   const session = getSession()
   const isAdmin = session?.role === 'admin'
 
-  useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem('pitchsync'))
-    const leagueId = auth?.LeagueId
-    console.log('leagueId:', leagueId)
+  const leagueId = JSON.parse(localStorage.getItem('pitchsync'))?.LeagueId
 
+  const loadFixtures = useCallback(() => {
     if (!leagueId) {
       setError('No league found. Please log in.')
       setLoading(false)
       return
     }
+    setLoading(true)
     getFixtures(leagueId)
       .then(({ upcoming, past }) => {
         setUpcoming(upcoming)
         setPast(past)
+        setError('')
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
-  }, [])
+  }, [leagueId])
+
+  useEffect(() => {
+    loadFixtures()
+  }, [loadFixtures])
+
+  function handleFixtureSuccess() {
+    setShowFixtureModal(false)
+    loadFixtures()
+  }
+
+  function handleResultSuccess() {
+    setShowResultModal(false)
+    loadFixtures()
+  }
 
   return (
     <AppLayout>
@@ -55,8 +73,18 @@ export default function Schedule() {
           </div>
           {isAdmin && (
             <div className={styles.adminActions}>
-              <button className={styles.btnSecondary}>+ Add Fixture</button>
-              <button className={styles.btnPrimary}>+ Add Result</button>
+              <button
+                className={styles.btnSecondary}
+                onClick={() => setShowFixtureModal(true)}
+              >
+                + Add Fixture
+              </button>
+              <button
+                className={styles.btnPrimary}
+                onClick={() => setShowResultModal(true)}
+              >
+                + Add Result
+              </button>
             </div>
           )}
         </div>
@@ -82,7 +110,7 @@ export default function Schedule() {
                   </p>
                 )}
                 {upcoming.map(f => (
-                  <div key={f.id} className={styles.fixtureRow}>
+                  <div key={f.id} className={`${styles.fixtureRow} ${isAdmin ? styles.fixtureRowAdmin : ''}`}>
                     <span className={styles.rowDate}>{formatDate(f.date)}</span>
                     <span className={styles.rowMatchup}>
                       <span className={styles.teamName}>{f.home_team_name}</span>
@@ -90,6 +118,14 @@ export default function Schedule() {
                       <span className={styles.teamName}>{f.away_team_name}</span>
                     </span>
                     <span className={styles.rowTime}>{formatTime(f.time)}</span>
+                    {isAdmin && (
+                      <button
+                        className={styles.btnInlineResult}
+                        onClick={() => setShowResultModal(true)}
+                      >
+                        Add Result
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -123,6 +159,21 @@ export default function Schedule() {
         )}
 
       </div>
+
+      {showFixtureModal && (
+        <AddFixtureModal
+          onClose={() => setShowFixtureModal(false)}
+          onSuccess={handleFixtureSuccess}
+        />
+      )}
+
+      {showResultModal && (
+        <AddResultModal
+          onClose={() => setShowResultModal(false)}
+          onSuccess={handleResultSuccess}
+        />
+      )}
+
     </AppLayout>
   )
 }

@@ -1,41 +1,63 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppLayout from '../components/AppLayout'
 import styles from './SettingsPlayers.module.css'
-
-const TEAMS = ['Falcons FC', 'City Rovers', 'Kings FC', 'United SC', 'Strikers', 'City FC']
-
-const INITIAL_PLAYERS = [
-  { id: 1,  name: 'Marcus Webb',    team: 'Falcons FC' },
-  { id: 2,  name: 'Jordan Cole',    team: 'City Rovers' },
-  { id: 3,  name: 'Theo Nkosi',     team: 'Kings FC' },
-  { id: 4,  name: 'Sam Okafor',     team: 'Falcons FC' },
-  { id: 5,  name: 'Liam Brennan',   team: 'United SC' },
-  { id: 6,  name: 'Dylan Marsh',    team: 'City Rovers' },
-  { id: 7,  name: 'Aiden Torres',   team: 'Kings FC' },
-  { id: 8,  name: 'Ryan Fowler',    team: 'Strikers' },
-  { id: 9,  name: 'Callum Reid',    team: 'United SC' },
-  { id: 10, name: 'Jamie Sinclair', team: 'City FC' },
-]
-
-let _nextId = 11
+import { getTopScorers, getTeams, addPlayer as apiAddPlayer, deletePlayer as apiDeletePlayer } from '../api'
 
 export default function SettingsPlayers() {
-  const [players, setPlayers] = useState(INITIAL_PLAYERS)
-  const [newName, setNewName] = useState('')
-  const [newTeam, setNewTeam] = useState(TEAMS[0])
-  const [confirmId, setConfirmId] = useState(null)
+  const [players,    setPlayers]    = useState([])
+  const [teams,      setTeams]      = useState([])
+  const [loading,    setLoading]    = useState(true)
+  const [error,      setError]      = useState('')
+  const [newName,    setNewName]    = useState('')
+  const [newTeamId,  setNewTeamId]  = useState('')
+  const [adding,     setAdding]     = useState(false)
+  const [confirmId,  setConfirmId]  = useState(null)
 
-  function addPlayer() {
+  const leagueId = JSON.parse(localStorage.getItem('pitchsync') || 'null')?.LeagueId
+
+  useEffect(() => {
+    if (!leagueId) {
+      setError('No league found.')
+      setLoading(false)
+      return
+    }
+    Promise.all([getTopScorers(leagueId), getTeams()])
+      .then(([scorers, teamList]) => {
+        setPlayers(scorers)
+        setTeams(teamList)
+        if (teamList.length > 0) setNewTeamId(String(teamList[0].id))
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [leagueId])
+
+  async function handleAdd() {
     const trimmed = newName.trim()
-    if (!trimmed) return
-    setPlayers(prev => [...prev, { id: _nextId++, name: trimmed, team: newTeam }])
-    setNewName('')
+    if (!trimmed || !newTeamId) return
+    setAdding(true)
+    setError('')
+    try {
+      await apiAddPlayer(trimmed, Number(newTeamId))
+      const scorers = await getTopScorers(leagueId)
+      setPlayers(scorers)
+      setNewName('')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setAdding(false)
+    }
   }
 
-  function deletePlayer(id) {
-    setPlayers(prev => prev.filter(p => p.id !== id))
-    setConfirmId(null)
+  async function handleDelete(id) {
+    setError('')
+    try {
+      await apiDeletePlayer(id)
+      setPlayers(prev => prev.filter(p => p.playerId !== id))
+      setConfirmId(null)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   return (
@@ -65,46 +87,62 @@ export default function SettingsPlayers() {
             placeholder="Player name"
             value={newName}
             onChange={e => setNewName(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && addPlayer()}
+            onKeyDown={e => e.key === 'Enter' && handleAdd()}
           />
           <div className={styles.selectWrap}>
             <select
               className={styles.select}
-              value={newTeam}
-              onChange={e => setNewTeam(e.target.value)}
+              value={newTeamId}
+              onChange={e => setNewTeamId(e.target.value)}
+              disabled={loading || teams.length === 0}
             >
-              {TEAMS.map(t => (
-                <option key={t} value={t}>{t}</option>
+              {teams.map(t => (
+                <option key={t.id} value={String(t.id)}>{t.name}</option>
               ))}
             </select>
           </div>
-          <button className={styles.btnPrimary} onClick={addPlayer}>+ Add Player</button>
+          <button
+            className={styles.btnPrimary}
+            onClick={handleAdd}
+            disabled={adding || loading || !newName.trim() || !newTeamId}
+          >
+            {adding ? '…' : '+ Add Player'}
+          </button>
         </div>
+
+        {error && <p className={styles.errorText}>{error}</p>}
 
         {/* Delete Player */}
         <div className={styles.sectionLabel}>
           <span className={styles.labelLine} />
           Delete Player
         </div>
-        <div className={styles.list}>
-          {players.map(p => (
-            <div key={p.id} className={styles.row}>
-              <div className={styles.playerInfo}>
-                <span className={styles.playerName}>{p.name}</span>
-                <span className={styles.playerTeam}>{p.team}</span>
-              </div>
-              {confirmId === p.id ? (
-                <div className={styles.rowActions}>
-                  <span className={styles.confirmText}>Confirm delete?</span>
-                  <button className={styles.btnDelete} onClick={() => deletePlayer(p.id)}>Delete</button>
-                  <button className={styles.btnGhost} onClick={() => setConfirmId(null)}>Cancel</button>
+
+        {loading ? (
+          <p className={styles.emptyText}>Loading players…</p>
+        ) : players.length === 0 ? (
+          <p className={styles.emptyText}>No players yet.</p>
+        ) : (
+          <div className={styles.list}>
+            {players.map(p => (
+              <div key={p.playerId} className={styles.row}>
+                <div className={styles.playerInfo}>
+                  <span className={styles.playerName}>{p.playerName}</span>
+                  <span className={styles.playerTeam}>{p.teamName}</span>
                 </div>
-              ) : (
-                <button className={styles.btnDeleteOutline} onClick={() => setConfirmId(p.id)}>Delete</button>
-              )}
-            </div>
-          ))}
-        </div>
+                {confirmId === p.playerId ? (
+                  <div className={styles.rowActions}>
+                    <span className={styles.confirmText}>Confirm delete?</span>
+                    <button className={styles.btnDelete} onClick={() => handleDelete(p.playerId)}>Delete</button>
+                    <button className={styles.btnGhost} onClick={() => setConfirmId(null)}>Cancel</button>
+                  </div>
+                ) : (
+                  <button className={styles.btnDeleteOutline} onClick={() => setConfirmId(p.playerId)}>Delete</button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
       </div>
     </AppLayout>

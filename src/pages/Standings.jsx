@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import AppLayout from '../components/AppLayout'
 import styles from './Standings.module.css'
+import AddResultModal from '../components/AddResultModal'
 import { getStandings, getSession } from '../api'
 
 function computeQuickStats(standings) {
@@ -22,28 +23,37 @@ function computeQuickStats(standings) {
 }
 
 export default function Standings() {
-  const [standings, setStandings] = useState([])
-  const [loading,   setLoading]   = useState(true)
-  const [error,     setError]     = useState('')
+  const [standings,       setStandings]       = useState([])
+  const [loading,         setLoading]         = useState(true)
+  const [error,           setError]           = useState('')
+  const [showResultModal, setShowResultModal] = useState(false)
 
   const session = getSession()
   const isAdmin = session?.role === 'admin'
 
-  useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem('pitchsync'))
-    const leagueId = auth?.LeagueId
-    console.log('leagueId:', leagueId)
+  const leagueId = JSON.parse(localStorage.getItem('pitchsync'))?.LeagueId
 
+  const loadStandings = useCallback(() => {
     if (!leagueId) {
       setError('No league found. Please log in.')
       setLoading(false)
       return
     }
+    setLoading(true)
     getStandings(leagueId)
-      .then(setStandings)
+      .then(data => { setStandings(data); setError('') })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
-  }, [])
+  }, [leagueId])
+
+  useEffect(() => {
+    loadStandings()
+  }, [loadStandings])
+
+  function handleResultSuccess() {
+    setShowResultModal(false)
+    loadStandings()
+  }
 
   const quickStats = computeQuickStats(standings)
 
@@ -56,7 +66,14 @@ export default function Standings() {
             <h1 className={styles.pageTitle}>Standings</h1>
             <p className={styles.pageSubtitle}>Live table, points, and recent form</p>
           </div>
-          {isAdmin && <button className={styles.btnAddResult}>+ Add Result</button>}
+          {isAdmin && (
+            <button
+              className={styles.btnAddResult}
+              onClick={() => setShowResultModal(true)}
+            >
+              + Add Result
+            </button>
+          )}
         </div>
 
         {loading && (
@@ -140,6 +157,13 @@ export default function Standings() {
         )}
 
       </div>
+      {showResultModal && (
+        <AddResultModal
+          onClose={() => setShowResultModal(false)}
+          onSuccess={handleResultSuccess}
+        />
+      )}
+
     </AppLayout>
   )
 }

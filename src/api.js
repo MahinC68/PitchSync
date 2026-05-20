@@ -109,16 +109,29 @@ export async function getTopScorers(leagueId) {
   return body.data
 }
 
-export async function addPlayer(name, teamId, leagueId) {
+export async function getPlayersByTeam(teamId) {
+  const body = await apiFetch(`/api/players/team/${teamId}`)
+  return body.data
+}
+
+export async function addPlayer(name, teamId) {
   const body = await apiFetch('/api/players', {
     method: 'POST',
-    body: JSON.stringify({ name, team_id: teamId, league_id: leagueId }),
+    body: JSON.stringify({ name, team_id: teamId }),
   })
   return body.data
 }
 
 export async function deletePlayer(id) {
   return apiFetch(`/api/players/${id}`, { method: 'DELETE' })
+}
+
+export async function addGoal(matchId, playerId, teamId) {
+  const body = await apiFetch('/api/goals', {
+    method: 'POST',
+    body: JSON.stringify({ match_id: matchId, player_id: playerId, team_id: teamId }),
+  })
+  return body.data
 }
 
 // ── Teams ─────────────────────────────────────────────────────────────────────

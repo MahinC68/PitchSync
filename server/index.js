@@ -21,12 +21,14 @@ const standingsRoutes = require('./routes/standings')
 const fixturesRoutes  = require('./routes/fixtures')
 const playersRoutes   = require('./routes/players')
 const teamsRoutes     = require('./routes/teams')
+const goalsRoutes     = require('./routes/goals')
 
 app.use('/api/auth',      authRoutes)
 app.use('/api/standings', standingsRoutes)
 app.use('/api/fixtures',  fixturesRoutes)
 app.use('/api/players',   playersRoutes)
 app.use('/api/teams',     teamsRoutes)
+app.use('/api/goals',     goalsRoutes)
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
