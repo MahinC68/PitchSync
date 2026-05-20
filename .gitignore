@@ -32,3 +32,16 @@ Thumbs.db
 
 # Vite
 *.local
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Jest coverage
+server/coverage/
+
+# Old static HTML (safe to delete entirely, but ignored in the meantime)
+/pages/
+/styles/
