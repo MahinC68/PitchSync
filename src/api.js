@@ -65,6 +65,11 @@ export async function verifyCode(accessCode) {
   })
 }
 
+export async function getLeague() {
+  const body = await apiFetch('/api/auth/league')
+  return body.data
+}
+
 export async function forgotPassword(email) {
   return apiFetch('/api/auth/forgot-password', {
     method: 'POST',
@@ -92,6 +97,10 @@ export async function addFixture(data) {
     body: JSON.stringify(data),
   })
   return body.data
+}
+
+export async function deleteFixture(id) {
+  return apiFetch(`/api/fixtures/${id}`, { method: 'DELETE' })
 }
 
 export async function addResult(fixtureId, homeScore, awayScore) {

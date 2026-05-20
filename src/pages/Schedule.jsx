@@ -4,7 +4,7 @@ import styles from './Schedule.module.css'
 import AddFixtureModal from '../components/AddFixtureModal'
 import AddResultModal from '../components/AddResultModal'
 import EditResultModal from '../components/EditResultModal'
-import { getFixtures, getSession } from '../api'
+import { getFixtures, getSession, deleteFixture } from '../api'
 
 function formatDate(dateStr) {
   const d = new Date(`${dateStr}T12:00:00`)
@@ -25,6 +25,8 @@ export default function Schedule() {
   const [showFixtureModal, setShowFixtureModal] = useState(false)
   const [showResultModal,  setShowResultModal]  = useState(false)
   const [editFixture,      setEditFixture]      = useState(null)
+
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null)
 
   const [filterTeam,     setFilterTeam]     = useState('')
   const [filterDateFrom, setFilterDateFrom] = useState('')
@@ -67,6 +69,16 @@ export default function Schedule() {
   }), [past, filterTeam, filterDateFrom, filterDateTo])
 
   const hasFilters = filterTeam || filterDateFrom || filterDateTo
+
+  async function handleDelete(id) {
+    try {
+      await deleteFixture(id)
+      setDeleteConfirmId(null)
+      loadFixtures()
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   function clearFilters() {
     setFilterTeam('')
@@ -125,9 +137,20 @@ export default function Schedule() {
                     </span>
                     <span className={styles.rowTime}>{formatTime(f.time)}</span>
                     {isAdmin && (
-                      <button className={styles.btnInlineResult} onClick={() => setShowResultModal(true)}>
-                        Add Result
-                      </button>
+                      <div className={styles.rowActions}>
+                        <button className={styles.btnInlineResult} onClick={() => setShowResultModal(true)}>
+                          Add Result
+                        </button>
+                        {deleteConfirmId === f.id ? (
+                          <>
+                            <span className={styles.deleteConfirmText}>Delete?</span>
+                            <button className={styles.btnInlineDeleteConfirm} onClick={() => handleDelete(f.id)}>Yes</button>
+                            <button className={styles.btnInlineGhost} onClick={() => setDeleteConfirmId(null)}>No</button>
+                          </>
+                        ) : (
+                          <button className={styles.btnInlineDelete} onClick={() => setDeleteConfirmId(f.id)}>Delete</button>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -195,9 +218,20 @@ export default function Schedule() {
                     </span>
                     <span className={styles.rowTime}>{formatTime(r.time)}</span>
                     {isAdmin && (
-                      <button className={styles.btnInlineResult} onClick={() => setEditFixture(r)}>
-                        Edit
-                      </button>
+                      <div className={styles.rowActions}>
+                        <button className={styles.btnInlineResult} onClick={() => setEditFixture(r)}>
+                          Edit
+                        </button>
+                        {deleteConfirmId === r.id ? (
+                          <>
+                            <span className={styles.deleteConfirmText}>Delete?</span>
+                            <button className={styles.btnInlineDeleteConfirm} onClick={() => handleDelete(r.id)}>Yes</button>
+                            <button className={styles.btnInlineGhost} onClick={() => setDeleteConfirmId(null)}>No</button>
+                          </>
+                        ) : (
+                          <button className={styles.btnInlineDelete} onClick={() => setDeleteConfirmId(r.id)}>Delete</button>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))}

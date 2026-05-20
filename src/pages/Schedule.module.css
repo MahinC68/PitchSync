@@ -268,6 +268,74 @@
   color: #000;
 }
 
+.rowActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.btnInlineDelete {
+  font-family: var(--font);
+  font-size: 0.5rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c06060;
+  background: transparent;
+  border: 1px solid rgba(160, 55, 55, 0.3);
+  border-radius: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--ease-fast), border-color var(--ease-fast);
+}
+
+.btnInlineDelete:hover {
+  background: rgba(160, 55, 55, 0.1);
+  border-color: rgba(160, 55, 55, 0.5);
+}
+
+.btnInlineDeleteConfirm {
+  font-family: var(--font);
+  font-size: 0.5rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(160, 55, 55, 0.55);
+  border: 1px solid rgba(160, 55, 55, 0.75);
+  border-radius: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btnInlineDeleteConfirm:hover {
+  background: rgba(160, 55, 55, 0.75);
+}
+
+.btnInlineGhost {
+  font-family: var(--font);
+  font-size: 0.5rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+}
+
+.btnInlineGhost:hover {
+  color: var(--color-text-muted);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 .fixtureRow:last-child,
 .resultRow:last-child {
   border-bottom: none;

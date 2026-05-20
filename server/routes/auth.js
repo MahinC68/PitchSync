@@ -1,8 +1,9 @@
-const express = require('express')
-const bcrypt  = require('bcryptjs')
-const jwt     = require('jsonwebtoken')
-const crypto  = require('crypto')
-const db      = require('../db')
+const express        = require('express')
+const bcrypt         = require('bcryptjs')
+const jwt            = require('jsonwebtoken')
+const crypto         = require('crypto')
+const db             = require('../db')
+const authMiddleware = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
@@ -14,6 +15,20 @@ function generateAccessCode() {
 function signToken(payload) {
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' })
 }
+
+// ── GET /api/auth/league (admin only) ────────────────────────────────────────
+router.get('/league', authMiddleware, async (req, res) => {
+  try {
+    const { rows: [league] } = await db.query(
+      'SELECT id, name, access_code FROM leagues WHERE id = $1',
+      [req.admin.leagueId]
+    )
+    return res.json({ success: true, data: league })
+  } catch (err) {
+    console.error('auth/league GET:', err.message)
+    return res.status(500).json({ success: false, error: 'Server error' })
+  }
+})
 
 // ── POST /api/auth/register ───────────────────────────────────────────────────
 router.post('/register', async (req, res) => {

@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppLayout from '../components/AppLayout'
 import styles from './Settings.module.css'
+import { getLeague } from '../api'
 
 const CARDS = [
   {
@@ -30,6 +32,21 @@ const CARDS = [
 ]
 
 export default function Settings() {
+  const [league,  setLeague]  = useState(null)
+  const [copied,  setCopied]  = useState(false)
+
+  useEffect(() => {
+    getLeague().then(setLeague).catch(() => {})
+  }, [])
+
+  function handleCopy() {
+    if (!league?.access_code) return
+    navigator.clipboard.writeText(league.access_code).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
   return (
     <AppLayout>
       <div className={styles.page}>
@@ -38,6 +55,21 @@ export default function Settings() {
           <h1 className={styles.pageTitle}>Settings</h1>
           <p className={styles.pageSubtitle}>Manage your league</p>
         </div>
+
+        {league && (
+          <div className={styles.accessCodeSection}>
+            <div className={styles.accessCodeLabel}>Player Access Code</div>
+            <p className={styles.accessCodeHint}>
+              Share this code with players so they can join and view {league.name}.
+            </p>
+            <div className={styles.accessCodeRow}>
+              <span className={styles.accessCode}>{league.access_code}</span>
+              <button className={styles.btnCopy} onClick={handleCopy}>
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className={styles.cards}>
           {CARDS.map(({ to, title, subtitle, icon }) => (

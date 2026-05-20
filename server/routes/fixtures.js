@@ -96,4 +96,23 @@ router.put('/:id/result', authMiddleware, async (req, res) => {
   }
 })
 
+// ── DELETE /api/fixtures/:id (admin only) ─────────────────────────────────────
+router.delete('/:id', authMiddleware, async (req, res) => {
+  try {
+    // Delete goals first, then the match (scoped to admin's league)
+    await db.query('DELETE FROM goals WHERE match_id = $1', [req.params.id])
+    const { rowCount } = await db.query(
+      'DELETE FROM matches WHERE id = $1 AND league_id = $2',
+      [req.params.id, req.admin.leagueId]
+    )
+    if (rowCount === 0) {
+      return res.status(404).json({ success: false, error: 'Fixture not found' })
+    }
+    return res.json({ success: true, data: null })
+  } catch (err) {
+    console.error('fixtures DELETE:', err.message)
+    return res.status(500).json({ success: false, error: 'Server error' })
+  }
+})
+
 module.exports = router
