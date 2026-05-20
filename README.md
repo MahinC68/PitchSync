@@ -4,7 +4,7 @@
 
 ## Overview
 
-PitchSync is a full stack web application for managing recreational soccer leagues. Admins create a league, manage teams, players, and fixtures, and record match results with goal scorers. Players join via a unique access code to view live standings, the match schedule, and the top scorer leaderboard — no account required.
+PitchSync is a full stack web application for managing recreational soccer leagues. Admins create a league, manage teams, players, and fixtures, and record match results with goal scorers. Players join via a unique access code to view live standings, the match schedule, and the top scorer leaderboard. No account required.
 
 ---
 
@@ -23,13 +23,13 @@ PitchSync is a full stack web application for managing recreational soccer leagu
 
 ## Features
 
-- **Role-based access** — admins get full CRUD, players get read-only view
-- **Live standings** — W/D/L form badges with tiebreaker logic (GD, GF)
-- **Fixture management** — schedule matches and record results with goal scorer tracking
-- **Top scorer leaderboard** — updated in real time as results are entered
-- **Team & player management** — via the admin Settings panel
-- **JWT-protected admin routes** — all write operations require authentication
-- **Player access via league code** — no account needed
+- **Role-based access:** admins get full CRUD, players get read-only view
+- **Live standings:** W/D/L form badges with tiebreaker logic (GD, GF)
+- **Fixture management:** schedule matches and record results with goal scorer tracking
+- **Top scorer leaderboard:** updated in real time as results are entered
+- **Team & player management:** via the admin Settings panel
+- **JWT-protected admin routes:** all write operations require authentication
+- **Player access via league code:** no account needed
 
 ---
 
@@ -61,7 +61,7 @@ npm run dev
 
 ## Testing
 
-### Backend — Jest + Supertest
+### Backend (Jest + Supertest)
 
 ```bash
 cd server
@@ -69,7 +69,7 @@ npm test
 # 56 tests · 4 suites · 83% line coverage
 ```
 
-### E2E — Playwright
+### E2E (Playwright)
 
 ```bash
 # Requires the dev server and API to be running
@@ -84,20 +84,20 @@ npm run test:e2e
 ### Auth
 | Method | Endpoint | Auth |
 |---|---|---|
-| `POST` | `/api/auth/register` | — |
-| `POST` | `/api/auth/login` | — |
-| `POST` | `/api/auth/verify-code` | — |
+| `POST` | `/api/auth/register` | Public |
+| `POST` | `/api/auth/login` | Public |
+| `POST` | `/api/auth/verify-code` | Public |
 | `GET` | `/api/auth/league` | Admin |
 
 ### Standings
 | Method | Endpoint | Auth |
 |---|---|---|
-| `GET` | `/api/standings/:league_id` | — |
+| `GET` | `/api/standings/:league_id` | Public |
 
 ### Fixtures
 | Method | Endpoint | Auth |
 |---|---|---|
-| `GET` | `/api/fixtures/:league_id` | — |
+| `GET` | `/api/fixtures/:league_id` | Public |
 | `POST` | `/api/fixtures` | Admin |
 | `PUT` | `/api/fixtures/:id/result` | Admin |
 | `DELETE` | `/api/fixtures/:id` | Admin |
@@ -105,7 +105,7 @@ npm run test:e2e
 ### Players & Goals
 | Method | Endpoint | Auth |
 |---|---|---|
-| `GET` | `/api/players/:league_id/top-scorers` | — |
+| `GET` | `/api/players/:league_id/top-scorers` | Public |
 | `GET` | `/api/players/team/:team_id` | Admin |
 | `POST` | `/api/players` | Admin |
 | `DELETE` | `/api/players/:id` | Admin |
@@ -164,4 +164,4 @@ PitchSync/
 
 **Frontend:** [pitch-sync-ochre.vercel.app](https://pitch-sync-ochre.vercel.app)
 
-**Backend:** Deployed on Railway alongside the PostgreSQL instance. Currently experiencing downtime due to an ongoing Railway platform outage — the backend URL will be re-linked here once service is restored. Everything runs as expected locally and was previously live.
+**Backend:** Deployed on Railway alongside the PostgreSQL instance. Currently experiencing downtime due to an ongoing Railway platform outage. The backend URL will be re-linked here once service is restored. Everything runs as expected locally and was previously live.
