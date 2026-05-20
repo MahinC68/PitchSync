@@ -3,7 +3,7 @@ const express = require('express')
 const cors    = require('cors')
 
 const app  = express()
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3000
 
 const ALLOWED_ORIGINS = new Set([
   process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -29,6 +29,10 @@ app.use('/api/fixtures',  fixturesRoutes)
 app.use('/api/players',   playersRoutes)
 app.use('/api/teams',     teamsRoutes)
 app.use('/api/goals',     goalsRoutes)
+
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok' })
+})
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
