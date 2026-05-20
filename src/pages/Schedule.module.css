@@ -219,6 +219,10 @@
   grid-template-columns: 150px 1fr 60px;
 }
 
+.resultRowAdmin {
+  grid-template-columns: 150px 1fr 60px auto;
+}
+
 .btnInlineResult {
   font-family: var(--font);
   font-size: 0.5rem;
@@ -327,6 +331,11 @@
 
   .resultRow {
     grid-template-columns: 110px 1fr 32px;
+    gap: var(--sp-2);
+  }
+
+  .resultRowAdmin {
+    grid-template-columns: 110px 1fr 32px auto;
     gap: var(--sp-2);
   }
 

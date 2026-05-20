@@ -3,6 +3,7 @@ import AppLayout from '../components/AppLayout'
 import styles from './Schedule.module.css'
 import AddFixtureModal from '../components/AddFixtureModal'
 import AddResultModal from '../components/AddResultModal'
+import EditResultModal from '../components/EditResultModal'
 import { getFixtures, getSession } from '../api'
 
 function formatDate(dateStr) {
@@ -25,6 +26,7 @@ export default function Schedule() {
   const [error,            setError]            = useState('')
   const [showFixtureModal, setShowFixtureModal] = useState(false)
   const [showResultModal,  setShowResultModal]  = useState(false)
+  const [editFixture,      setEditFixture]      = useState(null)
 
   const session = getSession()
   const isAdmin = session?.role === 'admin'
@@ -143,7 +145,7 @@ export default function Schedule() {
                   </p>
                 )}
                 {past.map(r => (
-                  <div key={r.id} className={styles.resultRow}>
+                  <div key={r.id} className={`${styles.resultRow} ${isAdmin ? styles.resultRowAdmin : ''}`}>
                     <span className={styles.rowDate}>{formatDate(r.date)}</span>
                     <span className={styles.rowMatchup}>
                       <span className={styles.teamName}>{r.home_team_name}</span>
@@ -151,6 +153,14 @@ export default function Schedule() {
                       <span className={styles.teamName}>{r.away_team_name}</span>
                     </span>
                     <span className={styles.rowTime}>{formatTime(r.time)}</span>
+                    {isAdmin && (
+                      <button
+                        className={styles.btnInlineResult}
+                        onClick={() => setEditFixture(r)}
+                      >
+                        Edit
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -171,6 +181,14 @@ export default function Schedule() {
         <AddResultModal
           onClose={() => setShowResultModal(false)}
           onSuccess={handleResultSuccess}
+        />
+      )}
+
+      {editFixture && (
+        <EditResultModal
+          fixture={editFixture}
+          onClose={() => setEditFixture(null)}
+          onSuccess={() => { setEditFixture(null); loadFixtures() }}
         />
       )}
 

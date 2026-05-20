@@ -134,6 +134,15 @@ export async function addGoal(matchId, playerId, teamId) {
   return body.data
 }
 
+export async function getGoalsByMatch(matchId) {
+  const body = await apiFetch(`/api/goals/match/${matchId}`)
+  return body.data
+}
+
+export async function deleteGoalsByMatch(matchId) {
+  return apiFetch(`/api/goals/match/${matchId}`, { method: 'DELETE' })
+}
+
 // ── Teams ─────────────────────────────────────────────────────────────────────
 
 export async function getTeams() {

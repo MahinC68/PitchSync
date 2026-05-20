@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
-import { getFixtures, getPlayersByTeam, addResult, addPlayer, addGoal } from '../api'
+import {
+  getPlayersByTeam, addResult, addPlayer, addGoal,
+  getGoalsByMatch, deleteGoalsByMatch,
+} from '../api'
 
 const UNKNOWN    = 'unknown'
 const OWN_GOAL   = 'own_goal'
@@ -67,68 +70,46 @@ function ScorerSlot({ label, players, playersLoading, scorer, onChange, onConfir
   )
 }
 
-export default function AddResultModal({ onClose, onSuccess }) {
-  const [upcoming,       setUpcoming]       = useState([])
-  const [loading,        setLoading]        = useState(true)
-  const [fixtureId,      setFixtureId]      = useState('')
-  const [homeScore,      setHomeScore]      = useState('')
-  const [awayScore,      setAwayScore]      = useState('')
+export default function EditResultModal({ fixture, onClose, onSuccess }) {
+  const [homeScore,      setHomeScore]      = useState(String(fixture.home_score ?? ''))
+  const [awayScore,      setAwayScore]      = useState(String(fixture.away_score ?? ''))
   const [homeScorers,    setHomeScorers]    = useState([])
   const [awayScorers,    setAwayScorers]    = useState([])
-  const [players,        setPlayers]        = useState({})   // { [teamId]: [{id, name}] }
+  const [players,        setPlayers]        = useState({})
+  const [loading,        setLoading]        = useState(true)
   const [playersLoading, setPlayersLoading] = useState(false)
-  const [confirming,     setConfirming]     = useState(null) // 'home:0', 'away:2', etc.
+  const [confirming,     setConfirming]     = useState(null)
   const [error,          setError]          = useState('')
   const [saving,         setSaving]         = useState(false)
 
-  // Load upcoming fixtures on mount
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem('pitchsync'))
-    const leagueId = auth?.LeagueId
-    if (!leagueId) {
-      setError('No league found.')
-      setLoading(false)
-      return
-    }
-    getFixtures(leagueId)
-      .then(({ upcoming }) => {
-        setUpcoming(upcoming)
-        if (upcoming.length > 0) setFixtureId(String(upcoming[0].id))
+    Promise.all([
+      getPlayersByTeam(fixture.home_team_id),
+      getPlayersByTeam(fixture.away_team_id),
+      getGoalsByMatch(fixture.id),
+    ])
+      .then(([homePlayers, awayPlayers, goals]) => {
+        setPlayers({
+          [fixture.home_team_id]: homePlayers,
+          [fixture.away_team_id]: awayPlayers,
+        })
+
+        const homeGoals = goals.filter(g => Number(g.team_id) === Number(fixture.home_team_id))
+        const awayGoals = goals.filter(g => Number(g.team_id) === Number(fixture.away_team_id))
+
+        const toSlots = (score, matchGoals) =>
+          Array.from({ length: Number(score) || 0 }, (_, i) =>
+            i < matchGoals.length
+              ? { value: String(matchGoals[i].player_id), newName: '' }
+              : emptyScorer()
+          )
+
+        setHomeScorers(toSlots(fixture.home_score, homeGoals))
+        setAwayScorers(toSlots(fixture.away_score, awayGoals))
       })
       .catch(err => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
-
-  // Fetch players for both teams whenever the selected fixture changes
-  useEffect(() => {
-    if (!fixtureId || !upcoming.length) return
-    const fix = upcoming.find(f => String(f.id) === fixtureId)
-    if (!fix) return
-
-    setPlayersLoading(true)
-    Promise.all([
-      getPlayersByTeam(fix.home_team_id),
-      getPlayersByTeam(fix.away_team_id),
-    ])
-      .then(([homePlayers, awayPlayers]) => {
-        setPlayers({
-          [fix.home_team_id]: homePlayers,
-          [fix.away_team_id]: awayPlayers,
-        })
-      })
-      .catch(err => setError(err.message))
-      .finally(() => setPlayersLoading(false))
-  }, [fixtureId, upcoming])
-
-  const fixture = upcoming.find(f => String(f.id) === fixtureId)
-
-  function handleFixtureChange(id) {
-    setFixtureId(id)
-    setHomeScore('')
-    setAwayScore('')
-    setHomeScorers([])
-    setAwayScorers([])
-  }
 
   function handleHomeScoreChange(val) {
     setHomeScore(val)
@@ -152,13 +133,10 @@ export default function AddResultModal({ onClose, onSuccess }) {
     setAwayScorers(prev => prev.map((s, idx) => idx === i ? updated : s))
   }
 
-  // Called when admin clicks "Add" next to the new-player text input.
-  // Creates the player immediately (or reuses existing), updates the local
-  // dropdown, and switches the slot to the confirmed player.
   async function handleConfirmNewPlayer(side, index) {
-    if (!fixture || confirming) return
+    if (confirming) return
     const scorer = (side === 'home' ? homeScorers : awayScorers)[index]
-    const name   = scorer?.newName.trim()
+    const name = scorer?.newName.trim()
     if (!name) return
 
     const teamId = side === 'home' ? fixture.home_team_id : fixture.away_team_id
@@ -166,7 +144,6 @@ export default function AddResultModal({ onClose, onSuccess }) {
     setError('')
 
     try {
-      // Reuse if already in the local list (case-insensitive)
       const existing = (players[teamId] ?? []).find(
         p => p.name.toLowerCase() === name.toLowerCase()
       )
@@ -178,11 +155,9 @@ export default function AddResultModal({ onClose, onSuccess }) {
         playerId = created.id
       }
 
-      // Re-fetch the full list so every scorer slot sees the new player immediately
       const freshPlayers = await getPlayersByTeam(teamId)
       setPlayers(prev => ({ ...prev, [teamId]: freshPlayers }))
 
-      // Switch this slot from "new player" mode to the confirmed player
       const updater = prev => prev.map((s, i) =>
         i === index ? { value: String(playerId), newName: '' } : s
       )
@@ -197,22 +172,21 @@ export default function AddResultModal({ onClose, onSuccess }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!fixtureId || homeScore === '' || awayScore === '') {
-      setError('Please select a fixture and enter scores.')
+    if (homeScore === '' || awayScore === '') {
+      setError('Please enter both scores.')
       return
     }
     setSaving(true)
     setError('')
     try {
-      await addResult(Number(fixtureId), Number(homeScore), Number(awayScore))
+      await deleteGoalsByMatch(fixture.id)
+      await addResult(fixture.id, Number(homeScore), Number(awayScore))
 
       const allScorers = [
         ...homeScorers.map(s => ({ ...s, teamId: fixture.home_team_id })),
         ...awayScorers.map(s => ({ ...s, teamId: fixture.away_team_id })),
       ]
 
-      // Per-submit cache to prevent duplicate creates if admin left a slot in
-      // "new player" mode without clicking "Add" first.
       const sessionCreated = {}
 
       for (const scorer of allScorers) {
@@ -222,7 +196,6 @@ export default function AddResultModal({ onClose, onSuccess }) {
         if (scorer.value === NEW_PLAYER) {
           const name = scorer.newName.trim()
           if (!name) continue
-
           const cacheKey = `${scorer.teamId}:${name.toLowerCase()}`
           if (sessionCreated[cacheKey]) {
             playerId = sessionCreated[cacheKey]
@@ -242,7 +215,7 @@ export default function AddResultModal({ onClose, onSuccess }) {
           playerId = Number(scorer.value)
         }
 
-        await addGoal(Number(fixtureId), playerId, Number(scorer.teamId))
+        await addGoal(fixture.id, playerId, Number(scorer.teamId))
       }
 
       onSuccess()
@@ -252,10 +225,9 @@ export default function AddResultModal({ onClose, onSuccess }) {
     }
   }
 
-  const noFixtures      = !loading && upcoming.length === 0 && !error
   const scoresReady     = homeScore !== '' && awayScore !== ''
-  const homeTeamPlayers = fixture ? (players[fixture.home_team_id] ?? []) : []
-  const awayTeamPlayers = fixture ? (players[fixture.away_team_id] ?? []) : []
+  const homeTeamPlayers = players[fixture.home_team_id] ?? []
+  const awayTeamPlayers = players[fixture.away_team_id] ?? []
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -264,7 +236,7 @@ export default function AddResultModal({ onClose, onSuccess }) {
         onClick={e => e.stopPropagation()}
       >
         <div className={styles.modalHead}>
-          <h2 className={styles.modalTitle}>Add Result</h2>
+          <h2 className={styles.modalTitle}>Edit Result</h2>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">×</button>
         </div>
 
@@ -272,26 +244,15 @@ export default function AddResultModal({ onClose, onSuccess }) {
           <div className={styles.modalBodyScroll}>
 
             {loading ? (
-              <p className={styles.modalLoading}>Loading fixtures…</p>
-            ) : noFixtures ? (
-              <p className={styles.modalLoading}>No upcoming fixtures to add results for.</p>
+              <p className={styles.modalLoading}>Loading…</p>
             ) : (
               <>
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Fixture</label>
-                  <div className={styles.selectWrap}>
-                    <select
-                      className={styles.select}
-                      value={fixtureId}
-                      onChange={e => handleFixtureChange(e.target.value)}
-                    >
-                      {upcoming.map(f => (
-                        <option key={f.id} value={f.id}>
-                          {f.home_team_name} vs {f.away_team_name} · {f.date}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <p style={{ margin: 0, fontSize: '0.8125rem', fontWeight: 300, color: 'var(--color-text)' }}>
+                    {fixture.home_team_name} vs {fixture.away_team_name}
+                    <span style={{ color: 'var(--color-text-muted)', marginLeft: 8 }}>· {fixture.date}</span>
+                  </p>
                 </div>
 
                 <div className={styles.fieldRow}>
@@ -327,9 +288,7 @@ export default function AddResultModal({ onClose, onSuccess }) {
 
                     {homeScorers.length > 0 && (
                       <div className={styles.scorerGroup}>
-                        <span className={styles.scorerGroupLabel}>
-                          {fixture?.home_team_name}
-                        </span>
+                        <span className={styles.scorerGroupLabel}>{fixture.home_team_name}</span>
                         {homeScorers.map((scorer, i) => (
                           <ScorerSlot
                             key={i}
@@ -347,9 +306,7 @@ export default function AddResultModal({ onClose, onSuccess }) {
 
                     {awayScorers.length > 0 && (
                       <div className={styles.scorerGroup}>
-                        <span className={styles.scorerGroupLabel}>
-                          {fixture?.away_team_name}
-                        </span>
+                        <span className={styles.scorerGroupLabel}>{fixture.away_team_name}</span>
                         {awayScorers.map((scorer, i) => (
                           <ScorerSlot
                             key={i}
@@ -374,18 +331,14 @@ export default function AddResultModal({ onClose, onSuccess }) {
           <div className={styles.modalFooter}>
             {error && <p className={styles.modalError}>{error}</p>}
             <div className={styles.modalActions}>
-              <button type="button" className={styles.btnGhost} onClick={onClose}>
-                {noFixtures ? 'Close' : 'Cancel'}
+              <button type="button" className={styles.btnGhost} onClick={onClose}>Cancel</button>
+              <button
+                type="submit"
+                className={styles.btnPrimary}
+                disabled={saving || loading}
+              >
+                {saving ? 'Saving…' : 'Save Changes'}
               </button>
-              {!noFixtures && (
-                <button
-                  type="submit"
-                  className={styles.btnPrimary}
-                  disabled={saving || loading}
-                >
-                  {saving ? 'Saving…' : 'Save Result'}
-                </button>
-              )}
             </div>
           </div>
         </form>

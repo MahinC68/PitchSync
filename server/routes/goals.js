@@ -4,6 +4,47 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
+// ── GET /api/goals/match/:match_id (admin only) ───────────────────────────────
+router.get('/match/:match_id', authMiddleware, async (req, res) => {
+  try {
+    const { rowCount } = await db.query(
+      'SELECT 1 FROM matches WHERE id = $1 AND league_id = $2',
+      [req.params.match_id, req.admin.leagueId]
+    )
+    if (rowCount === 0) return res.status(403).json({ success: false, error: 'Forbidden' })
+
+    const { rows } = await db.query(
+      `SELECT g.id, g.player_id, g.team_id, p.name AS player_name
+       FROM   goals g
+       JOIN   players p ON p.id = g.player_id
+       WHERE  g.match_id = $1
+       ORDER  BY g.id ASC`,
+      [req.params.match_id]
+    )
+    return res.json({ success: true, data: rows })
+  } catch (err) {
+    console.error('goals GET match:', err.message)
+    return res.status(500).json({ success: false, error: 'Server error' })
+  }
+})
+
+// ── DELETE /api/goals/match/:match_id (admin only) ───────────────────────────
+router.delete('/match/:match_id', authMiddleware, async (req, res) => {
+  try {
+    const { rowCount } = await db.query(
+      'SELECT 1 FROM matches WHERE id = $1 AND league_id = $2',
+      [req.params.match_id, req.admin.leagueId]
+    )
+    if (rowCount === 0) return res.status(403).json({ success: false, error: 'Forbidden' })
+
+    await db.query('DELETE FROM goals WHERE match_id = $1', [req.params.match_id])
+    return res.json({ success: true, data: null })
+  } catch (err) {
+    console.error('goals DELETE match:', err.message)
+    return res.status(500).json({ success: false, error: 'Server error' })
+  }
+})
+
 // ── POST /api/goals (admin only) ──────────────────────────────────────────────
 router.post('/', authMiddleware, async (req, res) => {
   const { match_id, player_id, team_id } = req.body
@@ -16,7 +57,6 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 
   try {
-    // Scope check: ensure match belongs to the admin's league
     const { rowCount } = await db.query(
       'SELECT 1 FROM matches WHERE id = $1 AND league_id = $2',
       [match_id, req.admin.leagueId]
