@@ -59,7 +59,7 @@
   gap: var(--sp-3);
   padding: 9px var(--sp-3);
   text-decoration: none;
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
   font-family: var(--font);
   font-size: 0.6875rem;
   font-weight: var(--fw-light);
@@ -74,7 +74,7 @@
 }
 
 .navItem:hover {
-  color: var(--color-text-muted);
+  color: var(--color-text);
   background: rgba(180, 151, 90, 0.05);
 }
 

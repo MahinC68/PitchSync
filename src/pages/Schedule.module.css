@@ -163,6 +163,28 @@
   color: var(--color-text);
 }
 
+.btnClearFilters {
+  font-family: var(--font);
+  font-size: 0.5625rem;
+  font-weight: var(--fw-light);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0;
+  padding: 0 14px;
+  cursor: pointer;
+  align-self: flex-end;
+  height: 34px;
+  transition: color var(--ease-fast), border-color var(--ease-fast);
+}
+
+.btnClearFilters:hover {
+  color: var(--color-text-muted);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
 /* section label */
 .sectionLabel {
   display: flex;
@@ -202,25 +224,26 @@
 .resultRow {
   display: grid;
   align-items: center;
+  column-gap: var(--sp-4);
   padding: 14px var(--sp-6);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   transition: background-color var(--ease-fast);
 }
 
 .fixtureRow {
-  grid-template-columns: 150px 1fr 60px;
+  grid-template-columns: 150px 1fr 80px;
 }
 
 .fixtureRowAdmin {
-  grid-template-columns: 150px 1fr 60px auto;
+  grid-template-columns: 150px 1fr 80px auto;
 }
 
 .resultRow {
-  grid-template-columns: 150px 1fr 60px;
+  grid-template-columns: 150px 1fr 80px;
 }
 
 .resultRowAdmin {
-  grid-template-columns: 150px 1fr 60px auto;
+  grid-template-columns: 150px 1fr 80px auto;
 }
 
 .btnInlineResult {
@@ -325,17 +348,22 @@
   }
 
   .fixtureRow {
-    grid-template-columns: 110px 1fr 50px;
+    grid-template-columns: 110px 1fr 60px;
+    gap: var(--sp-2);
+  }
+
+  .fixtureRowAdmin {
+    grid-template-columns: 110px 1fr 60px auto;
     gap: var(--sp-2);
   }
 
   .resultRow {
-    grid-template-columns: 110px 1fr 32px;
+    grid-template-columns: 110px 1fr 60px;
     gap: var(--sp-2);
   }
 
   .resultRowAdmin {
-    grid-template-columns: 110px 1fr 32px auto;
+    grid-template-columns: 110px 1fr 60px auto;
     gap: var(--sp-2);
   }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import AppLayout from '../components/AppLayout'
 import styles from './Schedule.module.css'
 import AddFixtureModal from '../components/AddFixtureModal'
@@ -7,7 +7,6 @@ import EditResultModal from '../components/EditResultModal'
 import { getFixtures, getSession } from '../api'
 
 function formatDate(dateStr) {
-  // dateStr is 'YYYY-MM-DD'; noon avoids any UTC-to-local shift
   const d = new Date(`${dateStr}T12:00:00`)
   return d.toLocaleDateString('en-GB', {
     weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
@@ -15,7 +14,6 @@ function formatDate(dateStr) {
 }
 
 function formatTime(timeStr) {
-  // timeStr is 'HH:MM:SS' from PostgreSQL
   return timeStr ? timeStr.slice(0, 5) : ''
 }
 
@@ -28,9 +26,12 @@ export default function Schedule() {
   const [showResultModal,  setShowResultModal]  = useState(false)
   const [editFixture,      setEditFixture]      = useState(null)
 
+  const [filterTeam,     setFilterTeam]     = useState('')
+  const [filterDateFrom, setFilterDateFrom] = useState('')
+  const [filterDateTo,   setFilterDateTo]   = useState('')
+
   const session = getSession()
   const isAdmin = session?.role === 'admin'
-
   const leagueId = JSON.parse(localStorage.getItem('pitchsync'))?.LeagueId
 
   const loadFixtures = useCallback(() => {
@@ -50,18 +51,27 @@ export default function Schedule() {
       .finally(() => setLoading(false))
   }, [leagueId])
 
-  useEffect(() => {
-    loadFixtures()
-  }, [loadFixtures])
+  useEffect(() => { loadFixtures() }, [loadFixtures])
 
-  function handleFixtureSuccess() {
-    setShowFixtureModal(false)
-    loadFixtures()
-  }
+  const teams = useMemo(() => {
+    const set = new Set()
+    past.forEach(r => { set.add(r.home_team_name); set.add(r.away_team_name) })
+    return [...set].sort()
+  }, [past])
 
-  function handleResultSuccess() {
-    setShowResultModal(false)
-    loadFixtures()
+  const filteredPast = useMemo(() => past.filter(r => {
+    if (filterTeam && r.home_team_name !== filterTeam && r.away_team_name !== filterTeam) return false
+    if (filterDateFrom && r.date < filterDateFrom) return false
+    if (filterDateTo   && r.date > filterDateTo)   return false
+    return true
+  }), [past, filterTeam, filterDateFrom, filterDateTo])
+
+  const hasFilters = filterTeam || filterDateFrom || filterDateTo
+
+  function clearFilters() {
+    setFilterTeam('')
+    setFilterDateFrom('')
+    setFilterDateTo('')
   }
 
   return (
@@ -75,16 +85,10 @@ export default function Schedule() {
           </div>
           {isAdmin && (
             <div className={styles.adminActions}>
-              <button
-                className={styles.btnSecondary}
-                onClick={() => setShowFixtureModal(true)}
-              >
+              <button className={styles.btnSecondary} onClick={() => setShowFixtureModal(true)}>
                 + Add Fixture
               </button>
-              <button
-                className={styles.btnPrimary}
-                onClick={() => setShowResultModal(true)}
-              >
+              <button className={styles.btnPrimary} onClick={() => setShowResultModal(true)}>
                 + Add Result
               </button>
             </div>
@@ -121,10 +125,7 @@ export default function Schedule() {
                     </span>
                     <span className={styles.rowTime}>{formatTime(f.time)}</span>
                     {isAdmin && (
-                      <button
-                        className={styles.btnInlineResult}
-                        onClick={() => setShowResultModal(true)}
-                      >
+                      <button className={styles.btnInlineResult} onClick={() => setShowResultModal(true)}>
                         Add Result
                       </button>
                     )}
@@ -138,13 +139,53 @@ export default function Schedule() {
                 <span className={styles.labelLine} />
                 Past Results
               </div>
+
+              <div className={styles.filters}>
+                <div className={styles.filterField}>
+                  <label className={styles.filterLabel}>Team</label>
+                  <div className={styles.selectWrap}>
+                    <select
+                      className={styles.select}
+                      value={filterTeam}
+                      onChange={e => setFilterTeam(e.target.value)}
+                    >
+                      <option value="">All teams</option>
+                      {teams.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className={styles.filterField}>
+                  <label className={styles.filterLabel}>From</label>
+                  <input
+                    type="date"
+                    className={styles.dateInput}
+                    value={filterDateFrom}
+                    onChange={e => setFilterDateFrom(e.target.value)}
+                  />
+                </div>
+                <div className={styles.filterField}>
+                  <label className={styles.filterLabel}>To</label>
+                  <input
+                    type="date"
+                    className={styles.dateInput}
+                    value={filterDateTo}
+                    onChange={e => setFilterDateTo(e.target.value)}
+                  />
+                </div>
+                {hasFilters && (
+                  <button className={styles.btnClearFilters} onClick={clearFilters}>
+                    Clear
+                  </button>
+                )}
+              </div>
+
               <div className={styles.list}>
-                {past.length === 0 && (
+                {filteredPast.length === 0 && (
                   <p style={{ color: '#666', padding: '16px 24px', fontSize: '0.8125rem' }}>
-                    No results yet.
+                    {hasFilters ? 'No results match the filter.' : 'No results yet.'}
                   </p>
                 )}
-                {past.map(r => (
+                {filteredPast.map(r => (
                   <div key={r.id} className={`${styles.resultRow} ${isAdmin ? styles.resultRowAdmin : ''}`}>
                     <span className={styles.rowDate}>{formatDate(r.date)}</span>
                     <span className={styles.rowMatchup}>
@@ -154,10 +195,7 @@ export default function Schedule() {
                     </span>
                     <span className={styles.rowTime}>{formatTime(r.time)}</span>
                     {isAdmin && (
-                      <button
-                        className={styles.btnInlineResult}
-                        onClick={() => setEditFixture(r)}
-                      >
+                      <button className={styles.btnInlineResult} onClick={() => setEditFixture(r)}>
                         Edit
                       </button>
                     )}
@@ -171,19 +209,11 @@ export default function Schedule() {
       </div>
 
       {showFixtureModal && (
-        <AddFixtureModal
-          onClose={() => setShowFixtureModal(false)}
-          onSuccess={handleFixtureSuccess}
-        />
+        <AddFixtureModal onClose={() => setShowFixtureModal(false)} onSuccess={() => { setShowFixtureModal(false); loadFixtures() }} />
       )}
-
       {showResultModal && (
-        <AddResultModal
-          onClose={() => setShowResultModal(false)}
-          onSuccess={handleResultSuccess}
-        />
+        <AddResultModal onClose={() => setShowResultModal(false)} onSuccess={() => { setShowResultModal(false); loadFixtures() }} />
       )}
-
       {editFixture && (
         <EditResultModal
           fixture={editFixture}
