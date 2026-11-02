@@ -100,6 +100,7 @@ export default function Schedule() {
 
         <div className={styles.pageHead}>
           <div>
+            <p className={styles.eyebrow}>League fixtures</p>
             <h1 className={styles.pageTitle}>Schedule</h1>
           </div>
           {isAdmin && (

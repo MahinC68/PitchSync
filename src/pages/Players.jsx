@@ -29,6 +29,7 @@ export default function Players() {
 
         <div className={styles.pageHead}>
           <div>
+            <p className={styles.eyebrow}>Player rankings</p>
             <h1 className={styles.pageTitle}>Leaderboard</h1>
           </div>
         </div>

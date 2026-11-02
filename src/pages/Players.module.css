@@ -1,13 +1,13 @@
 .page {
   width: 100%;
-  max-width: 900px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: var(--sp-8) var(--sp-8) var(--sp-16);
+  padding: 48px var(--sp-8) var(--sp-16);
 }
 
 .pageHead {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--sp-6);
   margin-bottom: var(--sp-8);
@@ -54,13 +54,16 @@
 /* table */
 .tableWrap {
   border: 1px solid rgba(180, 151, 90, 0.14);
+  background: #141414;
+  box-shadow: 0 12px 36px #0002;
 }
 
 .row {
   display: grid;
   grid-template-columns: 64px 1fr 200px 80px;
   align-items: center;
-  padding: 14px var(--sp-6);
+  padding: 18px var(--sp-6);
+  min-height: 68px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   transition: background-color var(--ease-fast);
 }
@@ -74,7 +77,10 @@
 }
 
 .header {
-  background: #0f0f0f;
+  background: #1c1c1c;
+  min-height: 46px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   border-bottom: 1px solid rgba(180, 151, 90, 0.14);
 }
 
@@ -124,9 +130,10 @@
 }
 
 .cGoals {
-  font-size: 0.9375rem;
-  font-weight: var(--fw-regular);
-  color: var(--color-text-muted);
+  font-size: 1.0625rem;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: #e4cca0;
   text-align: right;
 }
 
@@ -146,6 +153,16 @@
 }
 
 /* Match the shared league workspace. */
-.pageTitle { font-weight: 500; letter-spacing: -.04em; font-size: clamp(28px, 3vw, 40px); }
-.pageHead { padding-top: 12px; }
+.pageTitle { font-weight: 500; letter-spacing: -.05em; font-size: clamp(32px, 4vw, 48px); }
+.pageHead { padding-top: 0; }
 .pageSubtitle { margin-top: 10px; line-height: 1.6; }
+
+.eyebrow { color: var(--color-gold); text-transform: uppercase; letter-spacing: .18em; font-size: 10px; margin-bottom: 12px; }
+@media (max-width: 720px) {
+  .page { padding: var(--sp-6) var(--sp-4) var(--sp-12); }
+}
+
+@media (max-width: 600px) {
+  .row { padding-left: 16px; padding-right: 16px; grid-template-columns: 36px minmax(0, 1fr) 56px; }
+  .cPlayer { overflow-wrap: anywhere; }
+}
