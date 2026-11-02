@@ -110,7 +110,7 @@ export default function Login() {
             <h1 className={styles.cardTitle}>
               {tab === 'player' ? 'Join a League' : 'Welcome Back'}
             </h1>
-            <p className={styles.cardDescription}>{tab === 'player' ? 'Your team. Your fixtures. Your next win.' : 'Your league, ready for the next matchday.'}</p>
+            <p className={styles.cardDescription}>{tab === 'player' ? 'Enter your league access code to continue.' : 'Sign in to manage your league.'}</p>
           </div>
 
           <div className={styles.tabs}>
