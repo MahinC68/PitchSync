@@ -179,7 +179,7 @@
 }
 
 .btnPrimary:hover {
-  box-shadow: 0 0 20px rgba(180, 151, 90, 0.45);
+  box-shadow: 0 0 20px rgba(180, 151, 90, 0.338);
 }
 
 .btnPrimary:disabled {
@@ -341,11 +341,30 @@
 }
 
 .btnConfirmPlayer:hover {
-  box-shadow: 0 0 12px rgba(180, 151, 90, 0.4);
+  box-shadow: 0 0 12px rgba(180, 151, 90, 0.3);
 }
 
 .btnConfirmPlayer:disabled {
   opacity: 0.4;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .overlay { animation: backdrop-enter 160ms ease-out both; }
+  .modal { animation: surface-enter var(--motion-enter) var(--motion-ease) both; }
+}
+
+@keyframes dialog-open {
+  from { opacity: 0; transform: translate(var(--dialog-x, 0px), var(--dialog-y, 16px)) scale(var(--dialog-scale, .95)); }
+  to { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+@keyframes dialog-close {
+  to { opacity: 0; transform: translate(var(--dialog-x, 0px), var(--dialog-y, 8px)) scale(var(--dialog-scale, .95)); }
+}
+@keyframes overlay-close { to { opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .modal { animation: dialog-open 340ms cubic-bezier(.22,.75,.25,1) both; }
+  .overlay[data-closing] { animation: overlay-close 220ms ease both; pointer-events: none; }
+  .overlay[data-closing] .modal { animation: dialog-close 220ms ease both; }
 }

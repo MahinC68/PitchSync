@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import AppLayout from '../components/AppLayout'
 import styles from './Standings.module.css'
 import AddResultModal from '../components/AddResultModal'
 import { getStandings, getSession } from '../api'
@@ -27,6 +26,14 @@ export default function Standings() {
   const [loading,         setLoading]         = useState(true)
   const [error,           setError]           = useState('')
   const [showResultModal, setShowResultModal] = useState(false)
+  const [modalOrigin, setModalOrigin] = useState(null)
+
+  function openModal(event, open) {
+    const rect = event.currentTarget.getBoundingClientRect()
+    setModalOrigin({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, width: rect.width })
+    open()
+  }
+
 
   const session = getSession()
   const isAdmin = session?.role === 'admin'
@@ -58,7 +65,7 @@ export default function Standings() {
   const quickStats = computeQuickStats(standings)
 
   return (
-    <AppLayout>
+    <>
       <div className={styles.page}>
 
         <div className={styles.pageHead}>
@@ -69,7 +76,7 @@ export default function Standings() {
           {isAdmin && (
             <button
               className={styles.btnAddResult}
-              onClick={() => setShowResultModal(true)}
+              onClick={event => openModal(event, () => setShowResultModal(true))}
             >
               + Add Result
             </button>
@@ -166,12 +173,12 @@ export default function Standings() {
 
       </div>
       {showResultModal && (
-        <AddResultModal
+        <AddResultModal origin={modalOrigin}
           onClose={() => setShowResultModal(false)}
           onSuccess={handleResultSuccess}
         />
       )}
 
-    </AppLayout>
+    </>
   )
 }

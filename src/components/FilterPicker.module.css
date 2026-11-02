@@ -21,3 +21,9 @@
 .option { display: flex; justify-content: space-between; gap: 16px; text-align: left; background: transparent; color: #eee9dc; padding: 12px; border-radius: 0; font-size: 13px; }
 .option.selected { color: #e1c88e; background: #c6a86820; }
 @media(max-width: 640px) { .panel { left: 0; right: auto; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel { animation: surface-enter 120ms var(--motion-ease) both; }
+  .trigger > span { transition: transform 140ms ease-out; }
+  .trigger[aria-expanded='true'] > span { transform: rotate(180deg); }
+}

@@ -107,7 +107,7 @@
 .card:hover {
   background: rgba(180, 151, 90, 0.04);
   border-color: rgba(180, 151, 90, 0.4);
-  box-shadow: 0 0 28px rgba(180, 151, 90, 0.07);
+  box-shadow: 0 0 28px rgba(180, 151, 90, 0.0525);
 }
 
 .cardIcon {

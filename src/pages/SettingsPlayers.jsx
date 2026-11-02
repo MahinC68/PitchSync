@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import AppLayout from '../components/AppLayout'
 import styles from './SettingsPlayers.module.css'
 import { getTopScorers, getTeams, addPlayer as apiAddPlayer, deletePlayer as apiDeletePlayer } from '../api'
 
@@ -61,7 +60,7 @@ export default function SettingsPlayers() {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className={styles.page}>
 
         <div className={styles.pageHead}>
@@ -145,6 +144,6 @@ export default function SettingsPlayers() {
         )}
 
       </div>
-    </AppLayout>
+    </>
   )
 }

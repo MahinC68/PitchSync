@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react'
-import AppLayout from '../components/AppLayout'
 import styles from './Players.module.css'
-import { getTopScorers, getSession } from '../api'
+import { getTopScorers } from '../api'
 
 export default function Players() {
   const [players, setPlayers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')
-
-  const session = getSession()
-  const isAdmin = session?.role === 'admin'
 
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem('pitchsync'))
@@ -28,7 +24,7 @@ export default function Players() {
   }, [])
 
   return (
-    <AppLayout>
+    <>
       <div className={styles.page}>
 
         <div className={styles.pageHead}>
@@ -36,7 +32,6 @@ export default function Players() {
             <h1 className={styles.pageTitle}>Leaderboard</h1>
             <p className={styles.pageSubtitle}>Top scorers this season</p>
           </div>
-          {isAdmin && <button className={styles.btnPrimary}>+ Add Goal</button>}
         </div>
 
         {loading && (
@@ -76,6 +71,6 @@ export default function Players() {
         )}
 
       </div>
-    </AppLayout>
+    </>
   )
 }

@@ -109,3 +109,34 @@ button:disabled { opacity: .55; cursor: wait; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Motion stays on opacity and color to keep text and layouts steady. */
+:root { --motion-enter: 160ms; --motion-ease: cubic-bezier(.25, .1, .25, 1); }
+@keyframes content-enter {
+  from { opacity: .65; }
+  to { opacity: 1; }
+}
+@keyframes surface-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  button, a { transition: color 140ms ease-out, background-color 140ms ease-out, border-color 140ms ease-out, box-shadow 140ms ease-out; }
+}
+
+/* Keep the shared shell still while old and new page snapshots crossfade. */
+@keyframes page-leave {
+  to { opacity: 0; transform: translateX(-8px); }
+}
+@keyframes page-arrive {
+  from { opacity: 0; transform: translateX(12px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+  ::view-transition-old(league-content) { animation: page-leave 220ms ease both; }
+  ::view-transition-new(league-content) { animation: page-arrive 280ms cubic-bezier(.2,.65,.3,1) both; }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

@@ -54,7 +54,7 @@
 }
 
 .btnPrimary:hover {
-  box-shadow: 0 0 20px rgba(180, 151, 90, 0.45);
+  box-shadow: 0 0 20px rgba(180, 151, 90, 0.338);
 }
 
 .btnSecondary {

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { DatePicker, TeamPicker } from '../components/FilterPicker'
-import AppLayout from '../components/AppLayout'
 import styles from './Schedule.module.css'
 import AddFixtureModal from '../components/AddFixtureModal'
 import AddResultModal from '../components/AddResultModal'
@@ -25,6 +24,14 @@ export default function Schedule() {
   const [error,            setError]            = useState('')
   const [showFixtureModal, setShowFixtureModal] = useState(false)
   const [showResultModal,  setShowResultModal]  = useState(false)
+  const [modalOrigin, setModalOrigin] = useState(null)
+
+  function openModal(event, open) {
+    const rect = event.currentTarget.getBoundingClientRect()
+    setModalOrigin({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, width: rect.width })
+    open()
+  }
+
   const [editFixture,      setEditFixture]      = useState(null)
 
   const [deleteConfirmId, setDeleteConfirmId] = useState(null)
@@ -88,7 +95,7 @@ export default function Schedule() {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className={styles.page}>
 
         <div className={styles.pageHead}>
@@ -98,10 +105,10 @@ export default function Schedule() {
           </div>
           {isAdmin && (
             <div className={styles.adminActions}>
-              <button className={styles.btnSecondary} onClick={() => setShowFixtureModal(true)}>
+              <button className={styles.btnSecondary} onClick={event => openModal(event, () => setShowFixtureModal(true))}>
                 + Add Fixture
               </button>
-              <button className={styles.btnPrimary} onClick={() => setShowResultModal(true)}>
+              <button className={styles.btnPrimary} onClick={event => openModal(event, () => setShowResultModal(true))}>
                 + Add Result
               </button>
             </div>
@@ -139,7 +146,7 @@ export default function Schedule() {
                     <span className={styles.rowTime}>{formatTime(f.time)}</span>
                     {isAdmin && (
                       <div className={styles.rowActions}>
-                        <button className={styles.btnInlineResult} onClick={() => setShowResultModal(true)}>
+                        <button className={styles.btnInlineResult} onClick={event => openModal(event, () => setShowResultModal(true))}>
                           Add Result
                         </button>
                         {deleteConfirmId === f.id ? (
@@ -201,7 +208,7 @@ export default function Schedule() {
                     <span className={styles.rowTime}>{formatTime(r.time)}</span>
                     {isAdmin && (
                       <div className={styles.rowActions}>
-                        <button className={styles.btnInlineResult} onClick={() => setEditFixture(r)}>
+                        <button className={styles.btnInlineResult} onClick={event => openModal(event, () => setEditFixture(r))}>
                           Edit
                         </button>
                         {deleteConfirmId === r.id ? (
@@ -225,19 +232,19 @@ export default function Schedule() {
       </div>
 
       {showFixtureModal && (
-        <AddFixtureModal onClose={() => setShowFixtureModal(false)} onSuccess={() => { setShowFixtureModal(false); loadFixtures() }} />
+        <AddFixtureModal origin={modalOrigin} onClose={() => setShowFixtureModal(false)} onSuccess={() => { setShowFixtureModal(false); loadFixtures() }} />
       )}
       {showResultModal && (
-        <AddResultModal onClose={() => setShowResultModal(false)} onSuccess={() => { setShowResultModal(false); loadFixtures() }} />
+        <AddResultModal origin={modalOrigin} onClose={() => setShowResultModal(false)} onSuccess={() => { setShowResultModal(false); loadFixtures() }} />
       )}
       {editFixture && (
-        <EditResultModal
+        <EditResultModal origin={modalOrigin}
           fixture={editFixture}
           onClose={() => setEditFixture(null)}
           onSuccess={() => { setEditFixture(null); loadFixtures() }}
         />
       )}
 
-    </AppLayout>
+    </>
   )
 }

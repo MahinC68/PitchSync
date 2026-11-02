@@ -28,7 +28,7 @@
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   box-shadow:
     0 8px 40px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(180, 151, 90, 0.04),
+    0 0 20px rgba(180, 151, 90, 0.03),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
   padding: var(--sp-6);
@@ -104,7 +104,7 @@
 
 
 /* Warm stadium lighting and a more defined workspace. */
-.shell { background-image: radial-gradient(ellipse at 75% 0%, #b4975a14, transparent 55%); background-size: auto; }
+.shell { background-image: radial-gradient(ellipse at 75% 0%, #b4975a0f, transparent 55%); background-size: auto; }
 .sidebar { width: 224px; padding: 28px 18px 18px; background: linear-gradient(165deg, #1b1b1b, #0e0e0e 65%); border-radius: 0; }
 .sideTop { padding: 0 10px 28px; }
 .sideLogo { height: 30px; }
@@ -127,3 +127,9 @@
   .sidebar > button { position: absolute; top: 12px; right: 12px; width: auto !important; }
   .content { margin-left: 0; height: auto; overflow: visible; }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+
+}
+
+.content { view-transition-name: league-content; }

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import AppLayout from '../components/AppLayout'
 import styles from './Settings.module.css'
 import { getLeague } from '../api'
 
@@ -48,7 +47,7 @@ export default function Settings() {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className={styles.page}>
 
         <div className={styles.pageHead}>
@@ -90,6 +89,6 @@ export default function Settings() {
         </div>
 
       </div>
-    </AppLayout>
+    </>
   )
 }

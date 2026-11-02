@@ -48,7 +48,7 @@
 }
 
 .btnAddResult:hover {
-  box-shadow: 0 0 20px rgba(180, 151, 90, 0.45);
+  box-shadow: 0 0 20px rgba(180, 151, 90, 0.338);
 }
 
 /* body layout */
@@ -247,7 +247,7 @@
 
 /* top-2 qualification accent */
 .tableRowQual {
-  box-shadow: inset 3px 0 0 rgba(180, 151, 90, 0.5);
+  box-shadow: inset 3px 0 0 rgba(180, 151, 90, 0.375);
   background: rgba(180, 151, 90, 0.03);
 }
 
@@ -520,7 +520,7 @@
 .btnAddResult { padding: 14px 20px; border-radius: 0; font-size: 11px; font-weight: 500; letter-spacing: .08em; }
 .overview { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
 .overview > div { display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid #c6a86825; border-radius: 0; background: linear-gradient(135deg, #c6a86812, #141414); }
-.overview > div:first-child { background: radial-gradient(ellipse at 100% 0%, #c6a86824, transparent 80%), #181818; }
+.overview > div:first-child { background: radial-gradient(ellipse at 100% 0%, #c6a8681b, transparent 80%), #181818; }
 .overview span { text-transform: uppercase; letter-spacing: .13em; color: var(--color-gold); font-size: 10px; }
 .overview strong { font-size: clamp(24px, 2.6vw, 36px); font-weight: 500; letter-spacing: -.035em; }
 .overview small { font-size: 11px; color: var(--color-text-muted); }

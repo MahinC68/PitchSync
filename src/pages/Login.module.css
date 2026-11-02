@@ -27,7 +27,7 @@
   -webkit-backdrop-filter: blur(28px) saturate(200%);
   box-shadow:
     0 8px 40px rgba(0, 0, 0, 0.65),
-    0 0 24px rgba(180, 151, 90, 0.06),
+    0 0 24px rgba(180, 151, 90, 0.045),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -79,7 +79,7 @@
   border: 1px solid rgba(180, 151, 90, 0.22);
   box-shadow:
     0 0 80px rgba(0, 0, 0, 0.6),
-    0 0 40px rgba(180, 151, 90, 0.04);
+    0 0 40px rgba(180, 151, 90, 0.03);
   padding: var(--sp-8);
 }
 
@@ -249,8 +249,8 @@
 
 .btnSubmit:hover {
   box-shadow:
-    0 0 24px rgba(180, 151, 90, 0.5),
-    0 0 60px rgba(180, 151, 90, 0.2);
+    0 0 24px rgba(180, 151, 90, 0.375),
+    0 0 60px rgba(180, 151, 90, 0.15);
 }
 
 .btnSubmit:focus-visible {
@@ -259,7 +259,7 @@
 }
 
 
-.root { background-image: radial-gradient(ellipse at 25% 35%, #b4975a19, transparent 50%), linear-gradient(135deg, #111111, #090909); background-size: auto; }
+.root { background-image: radial-gradient(ellipse at 25% 35%, #b4975a13, transparent 50%), linear-gradient(135deg, #111111, #090909); background-size: auto; }
 .nav { border-radius: 0; }
 .card { width: min(460px, 100%); padding: 40px; border-radius: 0; background: linear-gradient(145deg, #202020e8, #111111f5 60%); box-shadow: 0 30px 100px #0008, inset 0 1px #ffffff0a; }
 .card::before { content: ''; position: absolute; top: -1px; left: 40px; right: 40px; height: 2px; background: linear-gradient(90deg, transparent, #dcc18a, transparent); }
@@ -272,6 +272,10 @@
 .label { color: #b5b1a6; font-size: 10px; letter-spacing: .12em; }
 .input { font-size: 14px; border-radius: 0; padding: 15px; background: #09090970; border-color: #ffffff1c; }
 .input:focus { box-shadow: 0 0 0 3px #c6a86814; }
-.btnSubmit { border-radius: 0; padding: 16px; font-weight: 500; box-shadow: 0 5px 20px #b4975a18; }
+.btnSubmit { border-radius: 0; padding: 16px; font-weight: 500; box-shadow: 0 5px 20px #b4975a12; }
 .forgotLink { font-size: 11px; letter-spacing: .03em; }
 @media(max-width: 480px) { .card { padding: 28px 24px; } .cardTitle { font-size: 30px; } }
+
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: surface-enter var(--motion-enter) var(--motion-ease) both; }
+}

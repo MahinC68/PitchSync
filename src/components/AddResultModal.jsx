@@ -1,3 +1,4 @@
+import useModalMotion from './useModalMotion'
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
 import { getFixtures, getPlayersByTeam, addResult, addPlayer, addGoal } from '../api'
@@ -67,7 +68,8 @@ function ScorerSlot({ label, players, playersLoading, scorer, onChange, onConfir
   )
 }
 
-export default function AddResultModal({ onClose, onSuccess }) {
+export default function AddResultModal({ onClose, onSuccess, origin }) {
+  const { closing, close, modalRef } = useModalMotion(onClose, origin)
   const [upcoming,       setUpcoming]       = useState([])
   const [loading,        setLoading]        = useState(true)
   const [fixtureId,      setFixtureId]      = useState('')
@@ -258,14 +260,15 @@ export default function AddResultModal({ onClose, onSuccess }) {
   const awayTeamPlayers = fixture ? (players[fixture.away_team_id] ?? []) : []
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
+    <div className={styles.overlay} data-closing={closing || undefined} onClick={close}>
       <div
+        ref={modalRef}
         className={`${styles.modal} ${styles.modalScrollable}`}
         onClick={e => e.stopPropagation()}
       >
         <div className={styles.modalHead}>
           <h2 className={styles.modalTitle}>Add Result</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">×</button>
+          <button className={styles.closeBtn} onClick={close} aria-label="Close">×</button>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'contents' }}>
@@ -374,7 +377,7 @@ export default function AddResultModal({ onClose, onSuccess }) {
           <div className={styles.modalFooter}>
             {error && <p className={styles.modalError}>{error}</p>}
             <div className={styles.modalActions}>
-              <button type="button" className={styles.btnGhost} onClick={onClose}>
+              <button type="button" className={styles.btnGhost} onClick={close}>
                 {noFixtures ? 'Close' : 'Cancel'}
               </button>
               {!noFixtures && (

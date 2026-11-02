@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import styles from './AppLayout.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
 import { getSession, clearSession } from '../api'
@@ -83,6 +83,7 @@ export default function AppLayout({ children }) {
             <NavLink
               key={to}
               to={to}
+              viewTransition
               className={({ isActive }) =>
                 `${styles.navItem} ${isActive ? styles.navItemActive : ''}`
               }
@@ -108,7 +109,7 @@ export default function AppLayout({ children }) {
       </aside>
 
       <main className={styles.content}>
-        {children}
+        {children || <Outlet />}
       </main>
 
     </div>

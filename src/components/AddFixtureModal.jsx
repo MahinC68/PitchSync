@@ -1,8 +1,10 @@
+import useModalMotion from './useModalMotion'
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
 import { getTeams, addFixture } from '../api'
 
-export default function AddFixtureModal({ onClose, onSuccess }) {
+export default function AddFixtureModal({ onClose, onSuccess, origin }) {
+  const { closing, close, modalRef } = useModalMotion(onClose, origin)
   const [teams,   setTeams]   = useState([])
   const [loading, setLoading] = useState(true)
   const [homeId,  setHomeId]  = useState('')
@@ -46,12 +48,12 @@ export default function AddFixtureModal({ onClose, onSuccess }) {
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+    <div className={styles.overlay} data-closing={closing || undefined} onClick={close}>
+      <div ref={modalRef} className={styles.modal} onClick={e => e.stopPropagation()}>
 
         <div className={styles.modalHead}>
           <h2 className={styles.modalTitle}>Add Fixture</h2>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">×</button>
+          <button className={styles.closeBtn} onClick={close} aria-label="Close">×</button>
         </div>
 
         <form className={styles.modalBody} onSubmit={handleSubmit}>
@@ -117,7 +119,7 @@ export default function AddFixtureModal({ onClose, onSuccess }) {
           {error && <p className={styles.modalError}>{error}</p>}
 
           <div className={styles.modalActions}>
-            <button type="button" className={styles.btnGhost} onClick={onClose}>Cancel</button>
+            <button type="button" className={styles.btnGhost} onClick={close}>Cancel</button>
             <button type="submit" className={styles.btnPrimary} disabled={saving || loading}>
               {saving ? 'Adding…' : '+ Add Fixture'}
             </button>

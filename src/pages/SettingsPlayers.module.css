@@ -222,7 +222,7 @@
 }
 
 .btnPrimary:hover {
-  box-shadow: 0 0 20px rgba(180, 151, 90, 0.4);
+  box-shadow: 0 0 20px rgba(180, 151, 90, 0.3);
 }
 
 .btnGhost {
