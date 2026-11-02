@@ -1,3 +1,4 @@
+import { SelectPicker, DatePicker, TimePicker } from './FilterPicker'
 import useModalMotion from './useModalMotion'
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
@@ -27,6 +28,7 @@ export default function AddFixtureModal({ onClose, onSuccess, origin }) {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!date || !time) { setError('Please select a date and time.'); return }
     if (homeId === awayId) {
       setError('Home and away teams must be different.')
       return
@@ -64,53 +66,25 @@ export default function AddFixtureModal({ onClose, onSuccess, origin }) {
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Home Team</label>
                 <div className={styles.selectWrap}>
-                  <select
-                    className={styles.select}
-                    value={homeId}
-                    onChange={e => setHomeId(e.target.value)}
-                  >
-                    {teams.map(t => (
-                      <option key={t.id} value={t.id}>{t.name}</option>
-                    ))}
-                  </select>
+                  <SelectPicker label="Home Team" value={homeId} onChange={setHomeId} options={teams.map(t => ({ value: t.id, label: t.name }))} />
                 </div>
               </div>
 
               <div className={styles.field}>
                 <label className={styles.fieldLabel}>Away Team</label>
                 <div className={styles.selectWrap}>
-                  <select
-                    className={styles.select}
-                    value={awayId}
-                    onChange={e => setAwayId(e.target.value)}
-                  >
-                    {teams.map(t => (
-                      <option key={t.id} value={t.id}>{t.name}</option>
-                    ))}
-                  </select>
+                  <SelectPicker label="Away Team" value={awayId} onChange={setAwayId} options={teams.map(t => ({ value: t.id, label: t.name }))} />
                 </div>
               </div>
 
               <div className={styles.fieldRow}>
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Date</label>
-                  <input
-                    type="date"
-                    className={styles.input}
-                    value={date}
-                    onChange={e => setDate(e.target.value)}
-                    required
-                  />
+                  <DatePicker label="Date" value={date} onChange={setDate} />
                 </div>
                 <div className={styles.field}>
                   <label className={styles.fieldLabel}>Time</label>
-                  <input
-                    type="time"
-                    className={styles.input}
-                    value={time}
-                    onChange={e => setTime(e.target.value)}
-                    required
-                  />
+                  <TimePicker label="Time" value={time} onChange={setTime} />
                 </div>
               </div>
             </>

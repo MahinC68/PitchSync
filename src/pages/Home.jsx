@@ -208,9 +208,11 @@ export default function Home() {
                 League Management Made Easy
               </h1>
 
+              <p className={styles.heroDescription}>Manage your league, follow the table, and stay ready for matchday.</p>
+
               <div className={styles.actions}>
-                <Link to="/login?tab=player" className={styles.btnPlayer}>Player</Link>
-                <Link to="/login?tab=admin" className={styles.btnAdmin}>Admin</Link>
+                <Link to="/login?tab=player" className={styles.btnPlayer}>Player portal<span className={styles.portalArrow} aria-hidden="true">↗</span></Link>
+                <Link to="/login?tab=admin" className={styles.btnAdmin}>Admin portal<span className={styles.portalArrow} aria-hidden="true">↗</span></Link>
               </div>
             </div>
 
@@ -222,7 +224,7 @@ export default function Home() {
 
       </section>
 
-      <section className={styles.features}>
+      <section id="features" className={styles.features}>
         <div className={styles.featuresHeader}>
           <span className={styles.sectionEyebrow}>
             <span className={styles.eyebrowLine} />
@@ -240,7 +242,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.howItWorks}>
+      <section id="how-it-works" className={styles.howItWorks}>
         <div className={styles.howHeader}>
           <span className={styles.sectionEyebrow}>
             <span className={styles.eyebrowLine} />

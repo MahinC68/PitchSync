@@ -101,7 +101,6 @@ export default function Schedule() {
         <div className={styles.pageHead}>
           <div>
             <h1 className={styles.pageTitle}>Schedule</h1>
-            <p className={styles.pageSubtitle}>Fixtures and results</p>
           </div>
           {isAdmin && (
             <div className={styles.adminActions}>

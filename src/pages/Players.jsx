@@ -30,7 +30,6 @@ export default function Players() {
         <div className={styles.pageHead}>
           <div>
             <h1 className={styles.pageTitle}>Leaderboard</h1>
-            <p className={styles.pageSubtitle}>Top scorers this season</p>
           </div>
         </div>
 

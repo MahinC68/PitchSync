@@ -1,3 +1,4 @@
+import { SelectPicker } from './FilterPicker'
 import useModalMotion from './useModalMotion'
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
@@ -28,19 +29,9 @@ function ScorerSlot({ label, players, playersLoading, scorer, onChange, onConfir
       <span className={styles.scorerSlotLabel}>{label}</span>
       <div className={styles.scorerSlotInputs}>
         <div className={styles.selectWrap}>
-          <select
-            className={styles.select}
-            value={scorer.value}
-            disabled={playersLoading}
-            onChange={e => onChange({ ...scorer, value: e.target.value, newName: '' })}
-          >
-            <option value={UNKNOWN}>Unknown / No scorer</option>
-            {players.map(p => (
-              <option key={p.id} value={String(p.id)}>{p.name}</option>
-            ))}
-            <option value={OWN_GOAL}>Own Goal</option>
-            <option value={NEW_PLAYER}>+ Add new player…</option>
-          </select>
+          <SelectPicker label={label} value={scorer.value} disabled={playersLoading}
+            onChange={value => onChange({ ...scorer, value, newName: '' })}
+            options={[{ value: UNKNOWN, label: 'Unknown / No scorer' }, ...players.map(p => ({ value: String(p.id), label: p.name })), { value: OWN_GOAL, label: 'Own Goal' }, { value: NEW_PLAYER, label: '+ Add new player…' }]} />
         </div>
 
         {scorer.value === NEW_PLAYER && (

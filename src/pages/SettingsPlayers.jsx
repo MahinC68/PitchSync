@@ -1,3 +1,4 @@
+import { SelectPicker } from '../components/FilterPicker'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './SettingsPlayers.module.css'
@@ -89,16 +90,8 @@ export default function SettingsPlayers() {
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
           />
           <div className={styles.selectWrap}>
-            <select
-              className={styles.select}
-              value={newTeamId}
-              onChange={e => setNewTeamId(e.target.value)}
-              disabled={loading || teams.length === 0}
-            >
-              {teams.map(t => (
-                <option key={t.id} value={String(t.id)}>{t.name}</option>
-              ))}
-            </select>
+            <SelectPicker label="Team" value={newTeamId} onChange={setNewTeamId}
+              disabled={loading || teams.length === 0} options={teams.map(t => ({ value: String(t.id), label: t.name }))} />
           </div>
           <button
             className={styles.btnPrimary}

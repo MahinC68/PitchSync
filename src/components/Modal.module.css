@@ -82,19 +82,7 @@
   position: relative;
 }
 
-.selectWrap::after {
-  content: '';
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 4px solid rgba(180, 151, 90, 0.6);
-  pointer-events: none;
-}
+
 
 .select {
   font-family: var(--font);

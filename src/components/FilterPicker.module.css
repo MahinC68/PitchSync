@@ -27,3 +27,15 @@
   .trigger > span { transition: transform 140ms ease-out; }
   .trigger[aria-expanded='true'] > span { transform: rotate(180deg); }
 }
+
+.panel { position: fixed; inset: auto; margin: 0; color: var(--color-text); max-height: calc(100dvh - 24px); overflow-y: auto; }
+.panel::backdrop { background: transparent; }
+.trigger { min-width: 0; line-height: 1.4; }
+.trigger:disabled { opacity: .5; cursor: not-allowed; }
+.option { align-items: center; flex-shrink: 0; }
+.option:focus-visible { outline-offset: -2px; background: #c6a86822; }
+.timeLabel { font-size: 12px; color: var(--color-gold); margin-bottom: 20px; }
+.timeFields { display: flex; align-items: end; gap: 12px; }
+.timeFields label { display: flex; flex: 1; flex-direction: column; gap: 8px; color: var(--color-text-muted); font-size: 11px; }
+.timeFields input { width: 100%; min-width: 0; padding: 12px; font-size: 24px; color: var(--color-text); background: #0d0d0d; border: 1px solid var(--color-border-gold); color-scheme: dark; }
+.timeFields > span { padding-bottom: 14px; color: var(--color-gold); }
