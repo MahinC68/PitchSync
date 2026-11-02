@@ -509,3 +509,37 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+.page { max-width: 1400px; padding-top: 48px; }
+.pageHead { align-items: center; }
+.eyebrow { color: var(--color-gold); text-transform: uppercase; letter-spacing: .18em; font-size: 10px; margin-bottom: 12px; }
+.pageTitle { font-size: clamp(32px, 4vw, 48px); letter-spacing: -.05em; font-weight: 500; }
+.titleDot { color: var(--color-gold); }
+.pageSubtitle { margin-top: 10px; }
+.btnAddResult { padding: 14px 20px; border-radius: 0; font-size: 11px; font-weight: 500; letter-spacing: .08em; }
+.overview { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.overview > div { display: flex; flex-direction: column; gap: 12px; padding: 24px; border: 1px solid #c6a86825; border-radius: 0; background: linear-gradient(135deg, #c6a86812, #141414); }
+.overview > div:first-child { background: radial-gradient(ellipse at 100% 0%, #c6a86824, transparent 80%), #181818; }
+.overview span { text-transform: uppercase; letter-spacing: .13em; color: var(--color-gold); font-size: 10px; }
+.overview strong { font-size: clamp(24px, 2.6vw, 36px); font-weight: 500; letter-spacing: -.035em; }
+.overview small { font-size: 11px; color: var(--color-text-muted); }
+.body { grid-template-columns: minmax(0, 1fr); }
+.main { min-width: 0; }
+.tableWrap { border-radius: 0; background: #141414; box-shadow: 0 12px 36px #0002; }
+.tableRow { grid-template-columns: 40px minmax(180px, 1fr) repeat(7, 44px) 56px 124px; min-width: 810px; min-height: 68px; }
+.tableHead { min-height: 46px; background: #1c1c1c; }
+.cTeam { flex-direction: row; align-items: center; gap: 12px; }
+.teamCrest { width: 32px; height: 36px; display: grid; place-items: center; flex-shrink: 0; clip-path: polygon(0 0,100% 0,100% 75%,50% 100%,0 75%); background: linear-gradient(140deg, #c6a86835, #c6a8680c); color: #dac38e; font-size: 10px; font-weight: 500; }
+.cPts { color: #e4cca0; font-size: 17px; font-weight: 500; }
+.badgeW, .badgeD, .badgeL { width: 22px; height: 24px; border-radius: 0; font-size: 9px; }
+.badgeW { background: #c6a86824; color: #d5b97b; }
+.badgeD { color: #b0ada4; }
+.side { display: block; }
+.sideCard { padding: 24px; border-radius: 0; background: #141414; }
+.statsGrid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.statBox { padding: 16px; gap: 10px; border-radius: 0; }
+.statValue { font-size: 15px; }
+.statSub { font-size: 13px; }
+@media(max-width: 1000px) { .overview { grid-template-columns: 1fr 1fr; } .overview > div:first-child { grid-column: 1 / -1; } .statsGrid { grid-template-columns: 1fr 1fr; } }
+@media(max-width: 480px) { .overview { gap: 10px; } .overview > div { padding: 18px; } .pageHead { gap: 12px; } .btnAddResult { padding: 12px; font-size: 9px; } .statsGrid { grid-template-columns: 1fr; } }

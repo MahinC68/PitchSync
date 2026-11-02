@@ -276,3 +276,8 @@
 .btnDelete:hover {
   background: rgba(160, 55, 55, 0.75);
 }
+
+/* Match the shared league workspace. */
+.pageTitle { font-weight: 500; letter-spacing: -.04em; font-size: clamp(28px, 3vw, 40px); }
+.pageHead { padding-top: 12px; }
+.pageSubtitle { margin-top: 10px; line-height: 1.6; }

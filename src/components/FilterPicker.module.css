@@ -1,0 +1,23 @@
+.root { position: relative; min-width: 170px; }
+.trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 12px 14px; border: 1px solid #c6a86840; border-radius: 0; background: #141414; color: var(--color-text); font-size: 13px; cursor: pointer; text-align: left; }
+.trigger > span { color: var(--color-gold); }
+.trigger:hover, .trigger[aria-expanded='true'] { border-color: var(--color-gold); background: #1c1c1c; }
+.panel { position: absolute; top: calc(100% + 8px); right: 0; width: 288px; max-width: calc(100vw - 48px); z-index: 60; padding: 14px; border: 1px solid #c6a86850; border-radius: 0; background: linear-gradient(140deg, #252525, #141414 75%); box-shadow: 0 18px 50px #0009, inset 0 1px #ffffff08; }
+.panel button { cursor: pointer; border: 0; font-family: var(--font); }
+.calendarHead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.calendarHead strong { font-size: 14px; font-weight: 500; color: #e1d2b1; }
+.calendarHead button { background: #c6a86815; color: var(--color-gold); border-radius: 0; width: 30px; height: 30px; font-size: 22px; }
+.calendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.weekday { color: #a6a39b; text-align: center; font-size: 10px; padding: 4px 0 10px; }
+.day { height: 32px; border-radius: 0; color: #eee9dc; background: transparent; font-size: 12px; }
+.day:hover, .option:hover { background: #c6a86822; }
+.day[aria-current='date'] { box-shadow: inset 0 0 0 1px #c6a86880; color: #e1c88e; }
+.outside { color: #787878; }
+.selected, .day.selected:hover { background: #c6a868; color: #141414; }
+.footer { display: flex; justify-content: space-between; border-top: 1px solid #c6a86825; margin-top: 12px; padding-top: 12px; }
+.footer button { color: #d5b97b; background: transparent; font-size: 12px; padding: 6px; border-radius: 0; }
+.footer button:hover { background: #c6a86818; }
+.options { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; }
+.option { display: flex; justify-content: space-between; gap: 16px; text-align: left; background: transparent; color: #eee9dc; padding: 12px; border-radius: 0; font-size: 13px; }
+.option.selected { color: #e1c88e; background: #c6a86820; }
+@media(max-width: 640px) { .panel { left: 0; right: auto; } }

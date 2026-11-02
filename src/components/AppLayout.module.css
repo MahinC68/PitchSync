@@ -23,7 +23,7 @@
 
   background: rgba(8, 8, 8, 0.88);
   border: 1px solid rgba(180, 151, 90, 0.15);
-  border-radius: 10px;
+  border-radius: 0;
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   box-shadow:
@@ -65,7 +65,7 @@
   font-weight: var(--fw-light);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  border-radius: 6px;
+  border-radius: 0;
   border: 1px solid transparent;
   transition:
     color var(--ease-fast),
@@ -100,4 +100,30 @@
   flex: 1;
   height: 100vh;
   overflow-y: auto;
+}
+
+
+/* Warm stadium lighting and a more defined workspace. */
+.shell { background-image: radial-gradient(ellipse at 75% 0%, #b4975a14, transparent 55%); background-size: auto; }
+.sidebar { width: 224px; padding: 28px 18px 18px; background: linear-gradient(165deg, #1b1b1b, #0e0e0e 65%); border-radius: 0; }
+.sideTop { padding: 0 10px 28px; }
+.sideLogo { height: 30px; }
+.leagueIdentity { padding: 26px 10px 8px; display: flex; flex-direction: column; gap: 12px; }
+.workspaceLabel { color: var(--color-text-muted); text-transform: uppercase; font-size: 9px; letter-spacing: .18em; }
+.leagueIdentity strong { font-size: 17px; line-height: 1.45; font-weight: 500; }
+.roleBadge { color: var(--color-gold); font-size: 10px; }
+.sideNav { margin-top: 28px; gap: 8px; }
+.navItem { padding: 14px 12px; font-size: 10px; font-weight: 500; letter-spacing: .08em; border-radius: 0; }
+.navItemActive { background: linear-gradient(90deg, #c6a86825, #c6a86808); box-shadow: inset 3px 0 var(--color-gold); }
+.content { margin-left: 256px; min-width: 0; }
+@media(max-width: 760px) {
+  .shell { height: auto; min-height: 100vh; flex-direction: column; overflow: visible; }
+  .sidebar { position: sticky; inset: auto; top: 0; width: 100%; padding: 14px 16px; border-radius: 0; gap: 12px; }
+  .sideTop { padding: 0; border: 0; }
+  .sideLogo { height: 24px; }
+  .leagueIdentity { display: none; }
+  .sideNav { flex-direction: row; margin: 0; gap: 2px; }
+  .navItem { padding: 10px 6px; font-size: 9px; gap: 5px; }
+  .sidebar > button { position: absolute; top: 12px; right: 12px; width: auto !important; }
+  .content { margin-left: 0; height: auto; overflow: visible; }
 }

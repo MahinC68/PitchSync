@@ -73,7 +73,12 @@ export default function AppLayout({ children }) {
           <img src={logo} alt="PitchSync" className={styles.sideLogo} />
         </div>
 
-        <nav className={styles.sideNav}>
+        <div className={styles.leagueIdentity}>
+          <span className={styles.workspaceLabel}>Your league</span>
+          <strong>{session?.LeagueName || session?.leagueName || 'League dashboard'}</strong>
+          <span className={styles.roleBadge}>{isAdmin ? 'Admin workspace' : 'Player workspace'}</span>
+        </div>
+        <nav className={styles.sideNav} aria-label="Main navigation">
           {visibleNav.map(({ to, label, icon }) => (
             <NavLink
               key={to}

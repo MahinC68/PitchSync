@@ -63,7 +63,8 @@ export default function Standings() {
 
         <div className={styles.pageHead}>
           <div>
-            <h1 className={styles.pageTitle}>Standings</h1>
+            <p className={styles.eyebrow}>The league at a glance</p>
+            <h1 className={styles.pageTitle}>Standings<span className={styles.titleDot}>.</span></h1>
             <p className={styles.pageSubtitle}>Live table, points, and recent form</p>
           </div>
           {isAdmin && (
@@ -84,6 +85,12 @@ export default function Standings() {
         )}
 
         {!loading && !error && (
+          <>
+          <div className={styles.overview}>
+            <div><span>League leader</span><strong>{standings[0]?.teamName || 'Season awaits'}</strong><small>{standings[0] ? `${standings[0].pts} points at the top` : 'The table starts here'}</small></div>
+            <div><span>Teams competing</span><strong>{standings.length.toString().padStart(2, '0')}</strong><small>One league. Every point matters.</small></div>
+            <div><span>Goals scored</span><strong>{standings.reduce((sum, t) => sum + Number(t.gf), 0)}</strong><small>Across all completed matches</small></div>
+          </div>
           <div className={styles.body}>
 
             <section className={styles.main}>
@@ -112,6 +119,7 @@ export default function Standings() {
                       <span className={styles.cPos}>{t.position}</span>
 
                       <span className={styles.cTeam}>
+                        <span className={styles.teamCrest} aria-hidden="true">{t.teamName.split(' ').map(word => word[0]).slice(0, 2).join('')}</span>
                         <span className={styles.teamName}>{t.teamName}</span>
                       </span>
 
@@ -154,6 +162,7 @@ export default function Standings() {
             </aside>
 
           </div>
+          </>
         )}
 
       </div>

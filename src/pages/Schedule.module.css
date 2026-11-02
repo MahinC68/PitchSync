@@ -353,9 +353,18 @@
 }
 
 .rowMatchup {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
   align-items: center;
   gap: var(--sp-4);
+}
+
+.rowMatchup .teamName:first-child {
+  text-align: right;
+}
+
+.rowMatchup .teamName {
+  overflow-wrap: anywhere;
 }
 
 .teamName {
@@ -373,6 +382,8 @@
 }
 
 .score {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
   font-size: 0.9375rem;
   font-weight: var(--fw-regular);
   color: var(--color-gold);
@@ -440,3 +451,8 @@
     flex-wrap: wrap;
   }
 }
+
+/* Match the shared league workspace. */
+.pageTitle { font-weight: 500; letter-spacing: -.04em; font-size: clamp(28px, 3vw, 40px); }
+.pageHead { padding-top: 12px; }
+.pageSubtitle { margin-top: 10px; line-height: 1.6; }

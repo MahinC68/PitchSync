@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { DatePicker, TeamPicker } from '../components/FilterPicker'
 import AppLayout from '../components/AppLayout'
 import styles from './Schedule.module.css'
 import AddFixtureModal from '../components/AddFixtureModal'
@@ -166,34 +167,15 @@ export default function Schedule() {
               <div className={styles.filters}>
                 <div className={styles.filterField}>
                   <label className={styles.filterLabel}>Team</label>
-                  <div className={styles.selectWrap}>
-                    <select
-                      className={styles.select}
-                      value={filterTeam}
-                      onChange={e => setFilterTeam(e.target.value)}
-                    >
-                      <option value="">All teams</option>
-                      {teams.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
+                  <TeamPicker value={filterTeam} options={teams} onChange={setFilterTeam} />
                 </div>
                 <div className={styles.filterField}>
                   <label className={styles.filterLabel}>From</label>
-                  <input
-                    type="date"
-                    className={styles.dateInput}
-                    value={filterDateFrom}
-                    onChange={e => setFilterDateFrom(e.target.value)}
-                  />
+                  <DatePicker label="From" value={filterDateFrom} onChange={setFilterDateFrom} />
                 </div>
                 <div className={styles.filterField}>
                   <label className={styles.filterLabel}>To</label>
-                  <input
-                    type="date"
-                    className={styles.dateInput}
-                    value={filterDateTo}
-                    onChange={e => setFilterDateTo(e.target.value)}
-                  />
+                  <DatePicker label="To" value={filterDateTo} onChange={setFilterDateTo} />
                 </div>
                 {hasFilters && (
                   <button className={styles.btnClearFilters} onClick={clearFilters}>
