@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import styles from './Players.module.css'
-import { getTopScorers } from '../api'
+import { getSession, getTopScorers } from '../api'
 
 export default function Players() {
   const [players, setPlayers] = useState([])
@@ -8,9 +8,8 @@ export default function Players() {
   const [error,   setError]   = useState('')
 
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem('pitchsync'))
-    const leagueId = auth?.LeagueId
-    console.log('leagueId:', leagueId)
+    const auth = getSession()
+    const leagueId = auth?.leagueId
 
     if (!leagueId) {
       setError('No league found. Please log in.')

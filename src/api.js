@@ -1,23 +1,7 @@
+import { getSession } from './session'
+
 const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
-// ── Session helpers ───────────────────────────────────────────────────────────
-// Stored shape: { role: 'admin'|'player', token?: string, leagueId, leagueName }
-
-export function getSession() {
-  try {
-    return JSON.parse(localStorage.getItem('pitchsync') || 'null')
-  } catch {
-    return null
-  }
-}
-
-export function saveSession(data) {
-  localStorage.setItem('pitchsync', JSON.stringify(data))
-}
-
-export function clearSession() {
-  localStorage.removeItem('pitchsync')
-}
+export { getSession, saveSession, clearSession } from './session'
 
 // ── Core fetch wrapper ────────────────────────────────────────────────────────
 
@@ -25,12 +9,18 @@ async function apiFetch(path, options = {}) {
   const session = getSession()
   const headers = {
     'Content-Type': 'application/json',
-    ...(session?.token ? { Authorization: `Bearer ${session.token}` } : {}),
+    ...(session?.role === 'admin' && session.token ? { Authorization: `Bearer ${session.token}` } : {}),
+    ...(session?.role === 'admin' && session.leagueId ? { 'X-League-Id': String(session.leagueId) } : {}),
     ...options.headers,
   }
 
   const res  = await fetch(`${BASE}${path}`, { ...options, headers })
   const json = await res.json()
+  const current = getSession()
+  // Never let a response or a multi-step write continue into a different league.
+  if (current?.token !== session?.token || current?.leagueId !== session?.leagueId || current?.role !== session?.role) {
+    throw new Error('The active league or session changed. Please try again.')
+  }
 
   if (!res.ok) {
     throw new Error(json.error || json.message || 'Request failed')
@@ -177,4 +167,14 @@ export async function renameTeam(id, name) {
 
 export async function deleteTeam(id) {
   return apiFetch(`/api/teams/${id}`, { method: 'DELETE' })
+}
+
+// Account-level league management. Ownership is verified by the API.
+export async function getLeagues() { return (await apiFetch('/api/leagues')).data }
+export async function getOwnedLeague(id) { return (await apiFetch(`/api/leagues/${id}`)).data }
+export async function createLeague(name) {
+  return (await apiFetch('/api/leagues', { method: 'POST', body: JSON.stringify({ name }) })).data
+}
+export async function renameLeague(id, name) {
+  return (await apiFetch(`/api/leagues/${id}`, { method: 'PATCH', body: JSON.stringify({ name }) })).data
 }

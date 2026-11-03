@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test'
 
-const PLAYER_CODE = 'METRO2025'
-const ADMIN_EMAIL = 'test@pitchsync.com'
-const ADMIN_PASS  = 'password123'
+const PLAYER_CODE = process.env.PITCHSYNC_PLAYER_CODE || 'METRO2025'
+const ADMIN_EMAIL = process.env.PITCHSYNC_ADMIN_EMAIL || 'admin@demo.com'
+const ADMIN_PASS  = process.env.PITCHSYNC_ADMIN_PASSWORD || 'demo1234'
 
 // Shared helper: log in as player via direct URL (skips home page)
 async function loginAsPlayer(page) {
@@ -20,7 +20,7 @@ test.describe('PitchSync critical flows', () => {
     await page.goto('/')
 
     // Click "Player" link in the hero
-    await page.getByRole('link', { name: 'Player' }).click()
+    await page.getByRole('link', { name: /Player(?: portal)?$/ }).click()
     await expect(page).toHaveURL(/\/login/)
 
     // Enter access code and submit
@@ -41,7 +41,7 @@ test.describe('PitchSync critical flows', () => {
     await page.goto('/')
 
     // Click "Admin" link in the hero
-    await page.getByRole('link', { name: 'Admin' }).click()
+    await page.getByRole('link', { name: /Admin(?: portal)?$/ }).click()
     await expect(page).toHaveURL(/\/login/)
 
     // Enter credentials and submit

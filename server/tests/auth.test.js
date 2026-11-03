@@ -8,7 +8,7 @@ describe('Auth routes', () => {
 
   afterAll(async () => {
     for (const id of cleanup) {
-      await db.query('DELETE FROM leagues WHERE id = $1', [id]).catch(() => {})
+      await cleanupLeague(id)
     }
   })
 

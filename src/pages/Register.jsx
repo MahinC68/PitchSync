@@ -50,8 +50,8 @@ export default function Register() {
     setLoading(true)
     setError('')
     try {
-      const { token, league } = await register(email, password, leagueName)
-      saveSession({ role: 'admin', token, LeagueId: league.id, LeagueName: league.name })
+      const { token, league, admin } = await register(email, password, leagueName)
+      saveSession({ role: 'admin', token, admin, leagueId: league?.id ?? null, leagueName: league?.name ?? '' })
       navigate('/standings')
     } catch (err) {
       setError(err.message)

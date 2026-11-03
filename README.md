@@ -47,7 +47,8 @@ cd server
 npm install
 cp .env.example .env
 # Fill in DATABASE_URL, JWT_SECRET, PORT
-node index.js
+npm run migrate # Existing database; initialize schema.sql first for a new database
+npm start
 ```
 
 ### Frontend
@@ -165,3 +166,9 @@ PitchSync/
 **Frontend:** [pitch-sync-ochre.vercel.app](https://pitch-sync-ochre.vercel.app)
 
 **Backend:** Deployed on Railway alongside the PostgreSQL instance. Currently experiencing downtime due to an ongoing Railway platform outage. The backend URL will be re-linked here once service is restored. Everything runs as expected locally and was previously live.
+
+## Multi-league accounts
+
+An admin account can own multiple independent leagues. Use the sidebar switcher to create, switch, or rename leagues; General Settings contains each league’s name and player access code.
+
+See [the Phase 1 migration, API, and verification guide](docs/multi-league.md) before deploying this update.

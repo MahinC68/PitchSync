@@ -66,10 +66,16 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 
     const { rows: [goal] } = await db.query(
-      'INSERT INTO goals (match_id, player_id, team_id) VALUES ($1, $2, $3) RETURNING *',
-      [match_id, player_id, team_id]
+      `INSERT INTO goals (match_id, player_id, team_id)
+       SELECT m.id, p.id, t.id FROM matches m
+       JOIN teams t ON t.id = $3 AND t.league_id = m.league_id
+       JOIN players p ON p.id = $2 AND p.team_id = t.id AND p.league_id = m.league_id
+       WHERE m.id = $1 AND m.league_id = $4 AND t.id IN (m.home_team_id, m.away_team_id)
+       RETURNING *`,
+      [match_id, player_id, team_id, req.admin.leagueId]
     )
 
+    if (!goal) return res.status(403).json({ success: false, error: 'Scorer and team must belong to this match and league' })
     return res.status(201).json({ success: true, data: goal })
   } catch (err) {
     console.error('goals POST:', err.message)

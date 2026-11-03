@@ -23,6 +23,8 @@ const playersRoutes   = require('./routes/players')
 const teamsRoutes     = require('./routes/teams')
 const goalsRoutes     = require('./routes/goals')
 
+app.use('/api/leagues', require('./routes/leagues'))
+
 app.use('/api/auth',      authRoutes)
 app.use('/api/standings', standingsRoutes)
 app.use('/api/fixtures',  fixturesRoutes)
@@ -36,6 +38,12 @@ app.get('/health', (_req, res) => {
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// Always return JSON errors, including rejected database operations.
+app.use((error, _req, res, _next) => {
+  console.error(error.message)
+  res.status(500).json({ success: false, error: 'Server error' })
 })
 
 if (process.env.NODE_ENV !== 'test') {

@@ -42,7 +42,7 @@ export default function Schedule() {
 
   const session = getSession()
   const isAdmin = session?.role === 'admin'
-  const leagueId = JSON.parse(localStorage.getItem('pitchsync'))?.LeagueId
+  const leagueId = session?.leagueId
 
   const loadFixtures = useCallback(() => {
     if (!leagueId) {

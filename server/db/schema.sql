@@ -10,16 +10,26 @@ CREATE TABLE IF NOT EXISTS leagues (
 );
 
 -- ── Admins ───────────────────────────────────────────────────────────────────
--- One admin per league. reset_token is null unless a password reset is pending.
+-- Accounts are independent of leagues; admin_leagues is authoritative.
 CREATE TABLE IF NOT EXISTS admins (
   id                 SERIAL      PRIMARY KEY,
   email              TEXT        NOT NULL UNIQUE,
   password_hash      TEXT        NOT NULL,
-  league_id          INTEGER     NOT NULL REFERENCES leagues(id) ON DELETE CASCADE,
+  league_id          INTEGER     REFERENCES leagues(id) ON DELETE SET NULL,
   reset_token        TEXT,
   reset_token_expiry TIMESTAMPTZ,
   created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Legacy admins.league_id is retained only for old seed scripts.
+CREATE TABLE IF NOT EXISTS admin_leagues (
+  admin_id INTEGER NOT NULL REFERENCES admins(id) ON DELETE CASCADE,
+  league_id INTEGER NOT NULL REFERENCES leagues(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (admin_id, league_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_leagues_league_id ON admin_leagues(league_id);
 
 -- ── Teams ─────────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS teams (

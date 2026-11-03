@@ -47,19 +47,22 @@ router.post('/', authMiddleware, async (req, res) => {
     })
   }
 
-  if (home_team_id === away_team_id) {
+  if (String(home_team_id) === String(away_team_id)) {
     return res.status(400).json({ success: false, error: 'A team cannot play itself' })
   }
 
   try {
     const { rows: [fixture] } = await db.query(
       `INSERT INTO matches (league_id, home_team_id, away_team_id, date, time, status)
-       VALUES ($1, $2, $3, $4, $5, 'scheduled')
+       SELECT $1, home.id, away.id, $4, $5, 'scheduled'
+       FROM teams home, teams away
+       WHERE home.id = $2 AND away.id = $3 AND home.league_id = $1 AND away.league_id = $1
        RETURNING id, league_id, home_team_id, away_team_id,
                  date::text, time::text, status`,
       [req.admin.leagueId, home_team_id, away_team_id, date, time]
     )
 
+    if (!fixture) return res.status(403).json({ success: false, error: 'Both teams must belong to the active league' })
     return res.status(201).json({ success: true, data: fixture })
   } catch (err) {
     console.error('fixtures POST:', err.message)
@@ -99,8 +102,7 @@ router.put('/:id/result', authMiddleware, async (req, res) => {
 // ── DELETE /api/fixtures/:id (admin only) ─────────────────────────────────────
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
-    // Delete goals first, then the match (scoped to admin's league)
-    await db.query('DELETE FROM goals WHERE match_id = $1', [req.params.id])
+    // Goals cascade only after the league-scoped match deletion succeeds.
     const { rowCount } = await db.query(
       'DELETE FROM matches WHERE id = $1 AND league_id = $2',
       [req.params.id, req.admin.leagueId]

@@ -4,8 +4,9 @@
   "description": "PitchSync Express + PostgreSQL API",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node db/migrate.js && node index.js",
+    "migrate": "node db/migrate.js",
+    "dev": "node db/migrate.js && nodemon index.js",
     "test": "jest --runInBand --forceExit --coverage"
   },
   "dependencies": {

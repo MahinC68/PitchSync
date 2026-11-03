@@ -1,6 +1,6 @@
 .root { position: relative; min-width: 170px; }
 .trigger { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 12px 14px; border: 1px solid #c6a86840; border-radius: 0; background: #141414; color: var(--color-text); font-size: 13px; cursor: pointer; text-align: left; }
-.trigger > span { color: var(--color-gold); }
+.trigger > span:last-child { color: var(--color-gold); }
 .trigger:hover, .trigger[aria-expanded='true'] { border-color: var(--color-gold); background: #1c1c1c; }
 .panel { position: absolute; top: calc(100% + 8px); right: 0; width: 288px; max-width: calc(100vw - 48px); z-index: 60; padding: 14px; border: 1px solid #c6a86850; border-radius: 0; background: linear-gradient(140deg, #252525, #141414 75%); box-shadow: 0 18px 50px #0009, inset 0 1px #ffffff08; }
 .panel button { cursor: pointer; border: 0; font-family: var(--font); }
@@ -24,8 +24,8 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .panel { animation: surface-enter 120ms var(--motion-ease) both; }
-  .trigger > span { transition: transform 140ms ease-out; }
-  .trigger[aria-expanded='true'] > span { transform: rotate(180deg); }
+  .trigger > span:last-child { transition: transform 140ms ease-out; }
+  .trigger[aria-expanded='true'] > span:last-child { transform: rotate(180deg); }
 }
 
 .panel { position: fixed; inset: auto; margin: 0; color: var(--color-text); max-height: calc(100dvh - 24px); overflow-y: auto; }

@@ -21,6 +21,8 @@ INSERT INTO admins (id, email, password_hash, league_id) VALUES
    '$2b$10$KIX.PLACEHOLDER.REPLACE.WITH.REAL.BCRYPT.HASH.HERE.xxxxx',
    1);
 
+INSERT INTO admin_leagues (admin_id, league_id) VALUES (1, 1);
+
 -- ── Teams ─────────────────────────────────────────────────────────────────────
 INSERT INTO teams (id, league_id, name) VALUES
   (1, 1, 'Falcons FC'),

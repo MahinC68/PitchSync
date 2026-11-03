@@ -2,7 +2,7 @@ import { SelectPicker } from '../components/FilterPicker'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './SettingsPlayers.module.css'
-import { getTopScorers, getTeams, addPlayer as apiAddPlayer, deletePlayer as apiDeletePlayer } from '../api'
+import { getSession, getTopScorers, getTeams, addPlayer as apiAddPlayer, deletePlayer as apiDeletePlayer } from '../api'
 
 export default function SettingsPlayers() {
   const [players,    setPlayers]    = useState([])
@@ -14,7 +14,7 @@ export default function SettingsPlayers() {
   const [adding,     setAdding]     = useState(false)
   const [confirmId,  setConfirmId]  = useState(null)
 
-  const leagueId = JSON.parse(localStorage.getItem('pitchsync') || 'null')?.LeagueId
+  const leagueId = getSession()?.leagueId
 
   useEffect(() => {
     if (!leagueId) {

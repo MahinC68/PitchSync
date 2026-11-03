@@ -5,14 +5,14 @@ export default defineConfig({
   timeout: 60000,
   retries: 1,
   use: {
-    baseURL: 'http://localhost:5174',
+    baseURL: process.env.PITCHSYNC_TEST_BASE_URL || 'http://localhost:5173',
     headless: true,
     trace: 'on-first-retry',
   },
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) },
     },
   ],
 })

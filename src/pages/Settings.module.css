@@ -156,3 +156,14 @@
 .pageTitle { font-weight: 500; letter-spacing: -.04em; font-size: clamp(28px, 3vw, 40px); }
 .pageHead { padding-top: 12px; }
 .pageSubtitle { margin-top: 10px; line-height: 1.6; }
+
+.generalTitle { font-size: 12px; font-weight: 400; color: var(--color-gold); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 28px; }
+.nameRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+.nameRow strong { display: block; font-weight: 400; font-size: 17px; line-height: 1.5; overflow-wrap: anywhere; }
+.leagueManagement { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-border); }
+@media (max-width: 480px) { .nameRow { align-items: flex-start; flex-direction: column; } .accessCodeSection { padding: 24px; } }
+
+@media (max-width: 480px) {
+  .accessCodeRow { flex-wrap: wrap; gap: 12px; }
+  .accessCode { font-size: 1.25rem; letter-spacing: .18em; overflow-wrap: anywhere; }
+}

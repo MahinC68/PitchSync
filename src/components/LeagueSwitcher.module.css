@@ -1,0 +1,14 @@
+.switcher { width: 100%; min-width: 0; }
+.switcher > div { min-width: 0; }
+.current { display: block; min-width: 0; white-space: normal; overflow-wrap: anywhere; font-size: 13px; line-height: 1.5; }
+.menu { display: flex; flex-direction: column; gap: 12px; }
+.label { color: var(--color-gold); font-size: 10px; text-transform: uppercase; letter-spacing: .15em; padding: 4px; }
+.list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+.row { display: flex; gap: 4px; align-items: stretch; }
+.league { flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; padding: 12px; background: transparent; color: var(--color-text); text-align: left; font-size: 13px; }
+.league span { overflow-wrap: anywhere; }
+.league small { color: var(--color-gold); font-size: 9px; }
+.active, .league:hover { background: #c6a86818; }
+.rename { width: 32px; flex-shrink: 0; color: var(--color-gold); background: #ffffff05; }
+.rename:hover { background: #c6a86818; }
+.create { border-top: 1px solid var(--color-border-gold) !important; padding: 14px 4px 4px; background: transparent; color: var(--color-gold); text-align: left; font-size: 12px; }

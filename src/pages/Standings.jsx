@@ -23,7 +23,7 @@ export default function Standings() {
   const session = getSession()
   const isAdmin = session?.role === 'admin'
 
-  const leagueId = session?.LeagueId || session?.leagueId
+  const leagueId = session?.leagueId
   const preferenceKey = `pitchsync:stats:${leagueId}`
   const [preferences, setPreferences] = useState(() => readStatsPreferences(preferenceKey))
   const statsGridRef = useRef(null)

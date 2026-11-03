@@ -1,7 +1,12 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useSession, setActiveLeague } from '../session'
+import { LeagueContext } from './LeagueContext'
+import LeagueSwitcher from './LeagueSwitcher'
+import LeagueModal from './LeagueModal'
+import { NavLink, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import styles from './AppLayout.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
-import { getSession, clearSession } from '../api'
+import { clearSession, getLeagues, getOwnedLeague, createLeague, renameLeague } from '../api'
 
 const NAV_ITEMS = [
   {
@@ -55,8 +60,58 @@ const NAV_ITEMS = [
 
 export default function AppLayout({ children }) {
   const navigate = useNavigate()
-  const session  = getSession()
+  const session = useSession()
+  const location = useLocation()
+  const [leagues, setLeagues] = useState([])
+  const [ready, setReady] = useState(false)
+  const [switching, setSwitching] = useState(false)
+  const [leagueError, setLeagueError] = useState('')
+  const [dialog, setDialog] = useState(null)
+  const [reload, setReload] = useState(0)
   const isAdmin  = session?.role === 'admin'
+
+  useEffect(() => {
+    let live = true
+    if (session?.role !== 'admin') { setReady(true); return }
+    setReady(false); setLeagueError('')
+    getLeagues().then(owned => {
+      if (!live) return
+      setLeagues(owned)
+      const active = owned.find(league => league.id === session.leagueId) || owned[0]
+      setActiveLeague(active)
+      setReady(true)
+    }).catch(error => { if (live) setLeagueError(error.message) })
+    return () => { live = false }
+  }, [session?.token, session?.role, reload])
+
+  function modalConfig(league, event) {
+    const trigger = event?.currentTarget
+    const rect = trigger?.getBoundingClientRect()
+    setDialog({ league, trigger, origin: rect ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, width: rect.width } : null })
+  }
+  async function switchLeague(id) {
+    if (id === session.leagueId || switching) return
+    setSwitching(true); setLeagueError('')
+    try {
+      const owned = await getOwnedLeague(id)
+      setActiveLeague(owned)
+    } catch (error) { setLeagueError(error.message) }
+    finally { setSwitching(false) }
+  }
+  async function saveLeague(name) {
+    if (dialog.league) {
+      const updated = await renameLeague(dialog.league.id, name)
+      setLeagues(current => current.map(league => league.id === updated.id ? updated : league))
+      if (updated.id === session.leagueId) setActiveLeague(updated)
+    } else {
+      const created = await createLeague(name)
+      setLeagues(current => [...current, created])
+      setActiveLeague(created)
+    }
+  }
+  const leagueContext = { leagues, activeId: session?.leagueId, switching,
+    switchLeague, openCreate: event => modalConfig(null, event), openRename: (league, event) => modalConfig(league, event) }
+
 
   function handleLogout() {
     clearSession()
@@ -65,7 +120,11 @@ export default function AppLayout({ children }) {
 
   const visibleNav = NAV_ITEMS.filter(item => !item.adminOnly || isAdmin)
 
+  if (!session) return <Navigate to="/login" replace />
+  if (!isAdmin && location.pathname.startsWith('/settings')) return <Navigate to="/standings" replace />
+
   return (
+    <LeagueContext.Provider value={leagueContext}>
     <div className={styles.shell}>
 
       <aside className={styles.sidebar}>
@@ -75,7 +134,7 @@ export default function AppLayout({ children }) {
 
         <div className={styles.leagueIdentity}>
           <span className={styles.workspaceLabel}>Your league</span>
-          <strong>{session?.LeagueName || session?.leagueName || 'League dashboard'}</strong>
+          {isAdmin ? <LeagueSwitcher /> : <strong>{session.leagueName || 'League dashboard'}</strong>}
           <span className={styles.roleBadge}>{isAdmin ? 'Admin workspace' : 'Player workspace'}</span>
         </div>
         <nav className={styles.sideNav} aria-label="Main navigation">
@@ -109,9 +168,15 @@ export default function AppLayout({ children }) {
       </aside>
 
       <main className={styles.content}>
-        {children || <Outlet />}
+        {leagueError && <div className={styles.leagueNotice} role="alert">{leagueError}{!ready && <button onClick={() => setReload(value => value + 1)}>Retry</button>}</div>}
+        {isAdmin && (!ready || switching) ? <p className={styles.leagueLoading}>{switching ? 'Switching league…' : 'Loading your leagues…'}</p> :
+          isAdmin && !leagues.length ? <div className={styles.leagueLoading}><h1>Create your first league</h1><button onClick={event => modalConfig(null, event)}>+ Create league</button></div> :
+          <div key={`${session.role}:${session.leagueId}`}>{children || <Outlet />}</div>}
+
       </main>
 
     </div>
+    {dialog && <LeagueModal config={dialog} onClose={() => setDialog(null)} onSubmit={saveLeague} />}
+    </LeagueContext.Provider>
   )
 }

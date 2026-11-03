@@ -25,6 +25,7 @@ async function createTestAdmin(leagueId, email) {
     `INSERT INTO admins (email, password_hash, league_id) VALUES ($1, $2, $3) RETURNING id, email, league_id`,
     [e, passwordHash, leagueId]
   )
+  await db.query('INSERT INTO admin_leagues (admin_id, league_id) VALUES ($1, $2)', [admin.id, leagueId])
   return { ...admin, password: 'password123' }
 }
 
@@ -76,6 +77,7 @@ async function createTestMatch(leagueId, homeTeamId, awayTeamId, opts = {}) {
 }
 
 async function cleanupLeague(leagueId) {
+  const { rows: owners } = await db.query('SELECT admin_id FROM admin_leagues WHERE league_id = $1', [leagueId])
   // Delete in FK dependency order: goals → matches/players → teams → admins → league
   await db.query(
     'DELETE FROM goals WHERE match_id IN (SELECT id FROM matches WHERE league_id = $1)',
@@ -86,6 +88,7 @@ async function cleanupLeague(leagueId) {
   await db.query('DELETE FROM teams WHERE league_id = $1', [leagueId])
   await db.query('DELETE FROM admins WHERE league_id = $1', [leagueId])
   await db.query('DELETE FROM leagues WHERE id = $1', [leagueId])
+  for (const owner of owners) await db.query('DELETE FROM admins WHERE id = $1 AND NOT EXISTS (SELECT 1 FROM admin_leagues WHERE admin_id = $1)', [owner.admin_id])
 }
 
 module.exports = {

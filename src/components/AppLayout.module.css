@@ -133,3 +133,14 @@
 }
 
 .content { view-transition-name: league-content; }
+
+.leagueNotice { margin: 24px 32px; padding: 16px; color: #d59b8d; background: #271b17; border: 1px solid #6b4134; font-size: 13px; }
+.leagueNotice button { margin-left: 16px; color: var(--color-gold); background: transparent; border: 1px solid var(--color-border-gold); padding: 6px 12px; cursor: pointer; }
+.leagueLoading { padding: 48px 32px; color: var(--color-text-muted); font-size: 14px; }
+.leagueLoading h1 { color: var(--color-text); font-size: 28px; margin-bottom: 24px; }
+.leagueLoading button { padding: 12px 20px; color: #111; background: var(--color-gold); border: 0; cursor: pointer; }
+@media (max-width: 760px) {
+  .leagueIdentity { display: flex; padding: 0; gap: 0; }
+  .leagueIdentity .workspaceLabel, .leagueIdentity .roleBadge { display: none; }
+  .leagueIdentity > strong { font-size: 12px; padding: 6px 0; }
+}

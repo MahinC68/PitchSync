@@ -3,7 +3,7 @@ import styles from './FilterPicker.module.css'
 
 const dateKey = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
-function Picker({ label, display, children, disabled = false }) {
+export function Picker({ label, display, children, disabled = false }) {
   const [open, setOpen] = useState(false)
   const root = useRef(null)
   const trigger = useRef(null)

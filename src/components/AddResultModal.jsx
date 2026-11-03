@@ -2,7 +2,7 @@ import { SelectPicker } from './FilterPicker'
 import useModalMotion from './useModalMotion'
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
-import { getFixtures, getPlayersByTeam, addResult, addPlayer, addGoal } from '../api'
+import { getSession, getFixtures, getPlayersByTeam, addResult, addPlayer, addGoal } from '../api'
 
 const UNKNOWN    = 'unknown'
 const OWN_GOAL   = 'own_goal'
@@ -76,8 +76,8 @@ export default function AddResultModal({ onClose, onSuccess, origin }) {
 
   // Load upcoming fixtures on mount
   useEffect(() => {
-    const auth = JSON.parse(localStorage.getItem('pitchsync'))
-    const leagueId = auth?.LeagueId
+    const auth = getSession()
+    const leagueId = auth?.leagueId
     if (!leagueId) {
       setError('No league found.')
       setLoading(false)

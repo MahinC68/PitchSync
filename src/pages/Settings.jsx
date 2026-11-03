@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Settings.module.css'
-import { getLeague } from '../api'
+import { useLeagues } from '../components/LeagueContext'
+import LeagueSwitcher from '../components/LeagueSwitcher'
 
 const CARDS = [
   {
@@ -31,12 +32,11 @@ const CARDS = [
 ]
 
 export default function Settings() {
-  const [league,  setLeague]  = useState(null)
+  const { leagues, activeId, openRename } = useLeagues()
+  const league = leagues.find(league => league.id === activeId)
   const [copied,  setCopied]  = useState(false)
 
-  useEffect(() => {
-    getLeague().then(setLeague).catch(() => {})
-  }, [])
+
 
   function handleCopy() {
     if (!league?.access_code) return
@@ -56,7 +56,9 @@ export default function Settings() {
         </div>
 
         {league && (
-          <div className={styles.accessCodeSection}>
+          <section className={styles.accessCodeSection} aria-label="General settings">
+            <h2 className={styles.generalTitle}>General Settings</h2>
+            <div className={styles.nameRow}><div><div className={styles.accessCodeLabel}>League name</div><strong>{league.name}</strong></div><button className={styles.btnCopy} onClick={event => openRename(league, event)}>Rename league</button></div>
             <div className={styles.accessCodeLabel}>Player Access Code</div>
             <p className={styles.accessCodeHint}>
               Share this code with players so they can join and view {league.name}.
@@ -67,7 +69,8 @@ export default function Settings() {
                 {copied ? 'Copied!' : 'Copy'}
               </button>
             </div>
-          </div>
+            <div className={styles.leagueManagement}><div className={styles.accessCodeLabel}>Switch or manage leagues</div><LeagueSwitcher label="Manage leagues" /></div>
+          </section>
         )}
 
         <div className={styles.cards}>

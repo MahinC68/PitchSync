@@ -62,7 +62,7 @@ export default function Login() {
     setError('')
     try {
       const { leagueId, leagueName } = await verifyCode(accessCode)
-      saveSession({ role: 'player', LeagueId: leagueId, LeagueName: leagueName })
+      saveSession({ role: 'player', leagueId, leagueName })
       navigate('/standings')
     } catch (err) {
       setError(err.message)
@@ -76,8 +76,8 @@ export default function Login() {
     setLoading(true)
     setError('')
     try {
-      const { token, league } = await login(email, password)
-      saveSession({ role: 'admin', token, LeagueId: league.id, LeagueName: league.name })
+      const { token, league, admin } = await login(email, password)
+      saveSession({ role: 'admin', token, admin, leagueId: league?.id ?? null, leagueName: league?.name ?? '' })
       navigate('/standings')
     } catch (err) {
       setError(err.message)
