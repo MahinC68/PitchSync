@@ -1,0 +1,2 @@
+.header { display:flex; align-items:center; gap:10px; color:var(--color-gold); font-size:10px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:12px; min-width:0; }
+.header > span:last-child { overflow-wrap:anywhere; }

@@ -112,6 +112,8 @@
 .workspaceLabel { color: var(--color-text-muted); text-transform: uppercase; font-size: 9px; letter-spacing: .18em; }
 .leagueIdentity strong { font-size: 17px; line-height: 1.45; font-weight: 500; }
 .roleBadge { color: var(--color-gold); font-size: 10px; }
+.playerLeague { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.playerLeague strong { overflow-wrap: anywhere; }
 .sideNav { margin-top: 28px; gap: 8px; }
 .navItem { padding: 14px 12px; font-size: 10px; font-weight: 500; letter-spacing: .08em; border-radius: 0; }
 .navItemActive { background: linear-gradient(90deg, #c6a86825, #c6a86808); box-shadow: inset 3px 0 var(--color-gold); }

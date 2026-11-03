@@ -7,6 +7,8 @@ import styles from './Standings.module.css'
 import AddResultModal from '../components/AddResultModal'
 import { getStandings, getSession } from '../api'
 import { Link } from 'react-router-dom'
+import LeagueHeader from '../components/LeagueHeader'
+import AnnouncementPanel from '../components/AnnouncementPanel'
 
 export default function Standings() {
   const [standings,       setStandings]       = useState([])
@@ -130,7 +132,7 @@ export default function Standings() {
 
         <div className={styles.pageHead}>
           <div>
-            <p className={styles.eyebrow}>League overview</p>
+            <LeagueHeader/>
             <h1 className={styles.pageTitle}>Standings</h1>
           </div>
           {isAdmin && (
@@ -224,6 +226,7 @@ export default function Standings() {
             </section>
 
             <aside className={styles.side}>
+              <AnnouncementPanel/>
               <div className={styles.sideCard} data-stat-editable>
                 <StatsMenu label="Customize Quick Stats" options={QUICK_OPTIONS} selected={preferences.quick} multiple onToggle={toggleQuickStat} />
                 <h3 className={styles.sideTitle}>Quick Stats</h3>

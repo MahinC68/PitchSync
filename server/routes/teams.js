@@ -1,13 +1,12 @@
 const express = require('express')
-const multer = require('multer')
 const db = require('../db')
 const auth = require('../middleware/authMiddleware')
 const { validName, fail } = require('../services/rosters')
 const { integer } = require('../services/rules')
-const { normalizeLogo, storeLogo, removeLogo, storageRoot } = require('../services/logos')
+const { normalizeLogo, storeLogo, removeLogo } = require('../services/logos')
 const router = express.Router()
 router.use(auth)
-const upload = multer({storage:multer.memoryStorage(),limits:{fileSize:2*1024*1024,files:1,fields:0,parts:2}}).single('logo')
+const upload = require('../middleware/logoUpload')('Team')
 
 router.get('/roster-settings',async(req,res,next)=>{
   try { const {rows:[settings]}=await db.query('SELECT max_roster_size FROM league_rules WHERE league_id=$1',[req.admin.leagueId]);res.json({success:true,data:settings}) } catch(error){next(error)}
@@ -42,10 +41,7 @@ async function ownedTeam(req,res,next){
   if(!/^\d+$/.test(req.params.id))return res.status(400).json({error:'Invalid team ID'})
   try{const {rowCount}=await db.query('SELECT 1 FROM teams WHERE id=$1 AND league_id=$2',[req.params.id,req.admin.leagueId]);if(!rowCount)return res.status(404).json({error:'Team not found'});next()}catch(error){next(error)}
 }
-router.put('/:id/logo',ownedTeam,(req,res,next)=>{
-  try{storageRoot()}catch(error){return next(error)}
-  upload(req,res,error=>{if(error)return res.status(error.code==='LIMIT_FILE_SIZE'?413:400).json({error:error.code==='LIMIT_FILE_SIZE'?'Team logos must be 2 MB or smaller':'Upload exactly one logo file, with no additional form fields'});next()})
-},async(req,res,next)=>{
+router.put('/:id/logo',ownedTeam,upload,async(req,res,next)=>{
   let client,key,oldKey,committed=false
   try{
     const image=await normalizeLogo(req.file)

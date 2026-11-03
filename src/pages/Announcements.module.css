@@ -1,0 +1,21 @@
+.page { max-width:1000px; margin:0 auto; padding:40px 32px 64px; }
+.back { color:var(--color-gold); font-size:12px; text-decoration:none; }
+.heading { display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap; margin:28px 0; padding-bottom:24px; border-bottom:1px solid var(--color-border-gold); }
+.heading h1 { font-size:clamp(30px,4vw,44px); font-weight:500; letter-spacing:-.04em; }
+.hint { font-size:12px; line-height:1.7; color:var(--color-text-muted); margin:10px 0; }
+.actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.primary,.secondary,.danger { padding:11px 16px; font-size:11px; border:1px solid var(--color-border-gold); cursor:pointer; }
+.primary { background:linear-gradient(110deg,#d4b978,#b4975a); color:#111; }.secondary { color:var(--color-gold); background:transparent; }.danger { color:#d48d81; border-color:#744139; background:transparent; }
+.primary:disabled,.secondary:disabled,.danger:disabled { opacity:.4; cursor:not-allowed; }
+.list { display:flex; flex-direction:column; gap:20px; }
+.card,.empty { border:1px solid var(--color-border-gold); padding:28px; background:#141414; }
+.card time { color:var(--color-gold); font-size:10px; letter-spacing:.05em; }
+.card h2,.empty h2 { margin:14px 0; font-size:20px; font-weight:400; line-height:1.5; overflow-wrap:anywhere; }
+.message { white-space:pre-wrap; overflow-wrap:anywhere; color:var(--color-text-muted); font-size:13px; line-height:1.9; }
+.card .actions { margin-top:24px; padding-top:20px; border-top:1px solid var(--color-border); }
+.error,.notice { padding:16px; font-size:13px; line-height:1.6; border:1px solid var(--color-border-gold); margin-bottom:24px; }
+.error { color:#d48d81; background:#241917; }.notice { color:var(--color-gold); background:#c6a8680d; }
+.pagination { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-top:24px; font-size:12px; color:var(--color-text-muted); }
+.modal { max-width:560px; max-height:calc(100dvh - 32px); overflow-y:auto; }.textarea { resize:vertical; min-height:140px; max-height:42dvh; font-family:inherit; line-height:1.7; }
+@media(prefers-reduced-motion:no-preference){.card { animation:content-enter 180ms ease-out; }}
+@media(max-width:640px){.page { padding:24px 16px 48px; }.card,.empty { padding:20px; }.heading { align-items:flex-start; }}

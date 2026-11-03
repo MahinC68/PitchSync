@@ -9,7 +9,7 @@ async function createLeague(client, name) {
   for (let attempt = 0; attempt < 8; attempt++) {
     const code = crypto.randomBytes(3).toString('hex').toUpperCase()
     const { rows: [league] } = await client.query(
-      'INSERT INTO leagues (name, access_code) VALUES ($1, $2) ON CONFLICT (access_code) DO NOTHING RETURNING id, name, access_code',
+      'INSERT INTO leagues (name, access_code) VALUES ($1, $2) ON CONFLICT (access_code) DO NOTHING RETURNING id, name, access_code, logo_key',
       [name.trim(), code]
     )
     if (league) return league
@@ -19,7 +19,7 @@ async function createLeague(client, name) {
 
 async function ownedLeagues(db, adminId) {
   const { rows } = await db.query(
-    `SELECT l.id, l.name, l.access_code FROM leagues l
+    `SELECT l.id, l.name, l.access_code, l.logo_key FROM leagues l
      JOIN admin_leagues al ON al.league_id = l.id
      WHERE al.admin_id = $1 ORDER BY l.created_at, l.id`, [adminId]
   )

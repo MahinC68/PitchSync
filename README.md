@@ -184,3 +184,7 @@ Settings → Manage Teams / Manage Players opens a shared workspace for team log
 ## Playoffs and qualification zones
 
 Settings → Playoffs enables optional 2-, 4- or 8-team knockout brackets, seeded from the league's current standings, with an optional third-place match. Preview before saving; record results and penalty winners in the dedicated Playoffs view. Regular standings and player goals stay separate. See [the Phase 5 guide](docs/playoffs.md) for migration, result-edit conflict resolution, API and verification details, including the missing Phase 4 implementation in this checkout.
+
+## Branding, announcements and settings
+
+Settings now groups General, League Rules, Competition, Teams & Players, and Announcements. General supports league logos alongside existing naming and switching. Announcements publish immediately to that league's dashboard and player view. See [the Phase 6 integration guide](docs/branding-announcements.md) for migration, persistent storage, API changes, test results, changed files, and the remaining Phase 4 integration gap.

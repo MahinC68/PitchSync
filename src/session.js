@@ -22,7 +22,7 @@ export function clearSession() {
 }
 export function setActiveLeague(league) {
   const session = getSession()
-  saveSession({ ...session, leagueId: league?.id ?? null, leagueName: league?.name ?? '' })
+  saveSession({ ...session, leagueId: league?.id ?? null, leagueName: league?.name ?? '', leagueLogo: league?.logo_key ?? null })
 }
 function subscribe(callback) {
   window.addEventListener('pitchsync-session', callback)

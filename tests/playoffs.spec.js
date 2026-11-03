@@ -9,7 +9,7 @@ test('playoff settings, qualification zones, progression and explicit result res
   const originalFixtures=(await(await request.get(`${api}/api/fixtures/${account.league.id}`)).json()).data
   await page.goto('/login?tab=admin');await page.getByLabel('Email',{exact:true}).fill(email);await page.getByLabel('Password',{exact:true}).fill('password123');await page.getByRole('button',{name:'Login',exact:true}).click();await page.waitForURL('**/standings')
   await expect(page.locator('[data-qualification-zone=true]')).toHaveCount(0)
-  await page.getByRole('link',{name:'Settings',exact:true}).click();await page.getByRole('link',{name:/Playoffs Qualification zones/}).click()
+  await page.getByRole('link',{name:'Settings',exact:true}).click();await page.getByRole('link',{name:/Competition Playoffs/}).click()
   await page.getByRole('button',{name:'Enable playoffs',exact:true}).click();await page.getByRole('button',{name:'Enabled',exact:true}).click()
   await page.getByRole('button',{name:'Third-place match',exact:true}).click();await page.getByRole('button',{name:'Include third-place match',exact:true}).click()
   await page.getByRole('button',{name:'Save playoff settings',exact:true}).click();await expect(page.getByRole('status')).toContainText('Playoff settings saved')

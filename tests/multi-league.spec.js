@@ -19,7 +19,7 @@ test('one admin creates, renames, and switches leagues without mixing data', asy
 
   async function addTeam(name) {
     await page.getByRole('link', { name: 'Settings', exact: true }).click()
-    await page.getByRole('link', { name: /Manage Teams/ }).click()
+    await page.getByRole('link', { name: /Teams & Players/ }).click()
     await page.getByPlaceholder('Team name', { exact: true }).fill(name)
     await page.getByRole('button', { name: '+ Add Team', exact: true }).click()
     await expect(page.getByText(name, { exact: true }).first()).toBeVisible()
@@ -68,7 +68,7 @@ test('one admin creates, renames, and switches leagues without mixing data', asy
   await page.reload()
   await expect(switcher).toContainText(renamed)
   await switchTo(first)
-  await page.getByRole('link', { name: 'Manage Teams', exact: false }).click()
+  await page.getByRole('link', { name: 'Teams & Players', exact: false }).click()
   await expect(page.getByText('A team only', { exact: true }).first()).toBeVisible()
   await expect(page.getByText('B team only', { exact: true })).toHaveCount(0)
   await page.getByRole('link', { name: 'Schedule', exact: true }).click()
@@ -122,7 +122,7 @@ test('late responses and cross-tab switching cannot carry old-league UI into the
     } else await route.continue()
   })
   await page.getByRole('link', { name: 'Settings', exact: true }).click()
-  await page.getByRole('link', { name: /Manage Teams/ }).click()
+  await page.getByRole('link', { name: /Teams & Players/ }).click()
   await received
   await page.getByRole('button', { name: 'Switch league', exact: true }).click()
   await page.getByRole('dialog', { name: 'Switch league picker', exact: true }).getByRole('button', { name: second.name, exact: true }).click()

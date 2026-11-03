@@ -206,3 +206,11 @@ export async function savePlayoffSettings(settings) { return (await apiFetch('/a
 export async function previewPlayoffs() { return (await apiFetch('/api/playoffs/preview',{method:'POST',body:'{}'})).data }
 export async function generatePlayoffs(token) { return (await apiFetch('/api/playoffs/bracket',{method:'POST',body:JSON.stringify({token})})).data }
 export async function savePlayoffResult(id,body,clear=false) { return (await apiFetch(`/api/playoffs/matches/${id}/result`,{method:clear?'DELETE':'PUT',body:JSON.stringify(body)})).data }
+
+export async function getLeagueIdentity(id) { return (await apiFetch(`/api/branding/league/${id}`)).data }
+export async function uploadLeagueLogo(file) { const body=new FormData();body.append('logo',file);return (await apiFetch('/api/branding/logo',{method:'PUT',body})).data }
+export async function removeLeagueLogo() { return (await apiFetch('/api/branding/logo',{method:'DELETE'})).data }
+export function leagueLogoUrl(key) { return /^[a-f0-9]{32}\.webp$/.test(key || '') ? `${BASE}/api/league-logos/${key}` : null }
+export async function getAnnouncements(id,limit=20,offset=0) { return (await apiFetch(`/api/announcements/league/${id}?limit=${limit}&offset=${offset}`)).data }
+export async function saveAnnouncement(id,data) { return (await apiFetch(`/api/announcements${id?`/${id}`:''}`,{method:id?'PUT':'POST',body:JSON.stringify(data)})).data }
+export async function deleteAnnouncement(id) { return apiFetch(`/api/announcements/${id}`,{method:'DELETE'}) }

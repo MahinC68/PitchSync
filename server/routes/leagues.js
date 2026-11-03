@@ -26,7 +26,7 @@ router.get('/:id', async (req, res, next) => {
   if (!/^\d+$/.test(req.params.id)) return res.status(400).json({ error: 'Invalid league ID' })
   try {
     const { rows: [league] } = await db.query(
-      `SELECT l.id, l.name, l.access_code FROM leagues l JOIN admin_leagues al ON al.league_id = l.id
+      `SELECT l.id, l.name, l.access_code, l.logo_key FROM leagues l JOIN admin_leagues al ON al.league_id = l.id
        WHERE l.id = $1 AND al.admin_id = $2`, [req.params.id, req.admin.adminId])
     if (!league) return res.status(403).json({ error: 'You do not own this league' })
     res.json({ success: true, data: league })
@@ -40,7 +40,7 @@ router.patch('/:id', async (req, res, next) => {
     const { rows: [league] } = await db.query(
       `UPDATE leagues l SET name = $1 FROM admin_leagues al
        WHERE l.id = $2 AND al.league_id = l.id AND al.admin_id = $3
-       RETURNING l.id, l.name, l.access_code`, [req.body.name.trim(), req.params.id, req.admin.adminId])
+       RETURNING l.id, l.name, l.access_code, l.logo_key`, [req.body.name.trim(), req.params.id, req.admin.adminId])
     if (!league) return res.status(403).json({ error: 'You do not own this league' })
     res.json({ success: true, data: league })
   } catch (error) { next(error) }

@@ -1,101 +1,17 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import GeneralSettings from '../components/GeneralSettings'
 import styles from './Settings.module.css'
-import { useLeagues } from '../components/LeagueContext'
-import LeagueSwitcher from '../components/LeagueSwitcher'
 
-const CARDS = [
-  { to: '/settings/playoffs', title: 'Playoffs', subtitle: 'Qualification zones, seeded brackets, and knockout results',
-    icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 3h5v5H2M2 12h5v5H2M7 5h5v10H7M12 10h6" stroke="currentColor" strokeWidth="1.2" /></svg> },
-  { to: '/settings/rules', title: 'League Rules', subtitle: 'Points, tiebreakers, adjustments, match length, and forfeits',
-    icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14M7 3v4M13 8v4M9 13v4" stroke="currentColor" strokeWidth="1.2" /></svg> },
-  {
-    to: '/settings/teams',
-    title: 'Manage Teams',
-    subtitle: 'Teams, logos, roster limits, and player management',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-        <rect x="1" y="7" width="18" height="12" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M6 7V5a4 4 0 0 1 8 0v2" stroke="currentColor" strokeWidth="1.2" />
-        <line x1="1" y1="12" x2="19" y2="12" stroke="currentColor" strokeWidth="1.2" />
-      </svg>
-    ),
-  },
-  {
-    to: '/settings/players',
-    title: 'Manage Players',
-    subtitle: 'Open team rosters to add, rename, or remove players',
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-        <circle cx="10" cy="6" r="4" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M2 19c0-4.418 3.582-8 8-8s8 3.582 8 8"
-          stroke="currentColor" strokeWidth="1.2" strokeLinecap="square" />
-      </svg>
-    ),
-  },
+const SECTIONS=[
+  {to:'/settings/rules',title:'League Rules',subtitle:'Points system, tiebreakers, adjustments, match duration, and forfeits',path:'M3 5h14M3 10h14M3 15h14M7 3v4M13 8v4M9 13v4'},
+  {to:'/settings/playoffs',title:'Competition',subtitle:'Playoffs, qualification zones, seeded brackets, and knockout results',path:'M2 3h5v5H2M2 12h5v5H2M7 5h5v10H7M12 10h6'},
+  {to:'/settings/teams',title:'Teams & Players',subtitle:'Teams, team logos, player management, and roster limits',path:'M7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM1 18c0-4 2-6 6-6s6 2 6 6M14 4a3 3 0 0 1 0 6M15 12c3 0 4 2 4 6'},
+  {to:'/settings/announcements',title:'Announcements',subtitle:'Publish and manage updates for everyone in your league',path:'m3 8 12-5v14L3 12V8ZM3 12l2 6h3l-2-5M15 7h3v6h-3'},
 ]
-
-export default function Settings() {
-  const { leagues, activeId, openRename } = useLeagues()
-  const league = leagues.find(league => league.id === activeId)
-  const [copied,  setCopied]  = useState(false)
-
-
-
-  function handleCopy() {
-    if (!league?.access_code) return
-    navigator.clipboard.writeText(league.access_code).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
-  }
-
-  return (
-    <>
-      <div className={styles.page}>
-
-        <div className={styles.pageHead}>
-          <h1 className={styles.pageTitle}>Settings</h1>
-          <p className={styles.pageSubtitle}>Manage your league</p>
-        </div>
-
-        {league && (
-          <section className={styles.accessCodeSection} aria-label="General settings">
-            <h2 className={styles.generalTitle}>General Settings</h2>
-            <div className={styles.nameRow}><div><div className={styles.accessCodeLabel}>League name</div><strong>{league.name}</strong></div><button className={styles.btnCopy} onClick={event => openRename(league, event)}>Rename league</button></div>
-            <div className={styles.accessCodeLabel}>Player Access Code</div>
-            <p className={styles.accessCodeHint}>
-              Share this code with players so they can join and view {league.name}.
-            </p>
-            <div className={styles.accessCodeRow}>
-              <span className={styles.accessCode}>{league.access_code}</span>
-              <button className={styles.btnCopy} onClick={handleCopy}>
-                {copied ? 'Copied!' : 'Copy'}
-              </button>
-            </div>
-            <div className={styles.leagueManagement}><div className={styles.accessCodeLabel}>Switch or manage leagues</div><LeagueSwitcher label="Manage leagues" /></div>
-          </section>
-        )}
-
-        <div className={styles.cards}>
-          {CARDS.map(({ to, title, subtitle, icon }) => (
-            <Link key={to} to={to} className={styles.card}>
-              <span className={styles.cardIcon}>{icon}</span>
-              <span className={styles.cardBody}>
-                <span className={styles.cardTitle}>{title}</span>
-                <span className={styles.cardSub}>{subtitle}</span>
-              </span>
-              <span className={styles.cardArrow}>
-                <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-                  <path d="M3 6.5h7M7 3.5l3 3-3 3"
-                    stroke="currentColor" strokeWidth="1.2" strokeLinecap="square" />
-                </svg>
-              </span>
-            </Link>
-          ))}
-        </div>
-
-      </div>
-    </>
-  )
+export default function Settings(){
+  return <div className={styles.page}>
+    <div className={styles.pageHead}><h1 className={styles.pageTitle}>Settings</h1><p className={styles.pageSubtitle}>Manage your league</p></div>
+    <GeneralSettings/>
+    <div className={styles.cards} aria-label="League settings sections">{SECTIONS.map(({to,title,subtitle,path})=><Link key={to} to={to} viewTransition className={styles.card}><span className={styles.cardIcon} aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d={path} stroke="currentColor" strokeWidth="1.2"/></svg></span><span className={styles.cardBody}><span className={styles.cardTitle}>{title}</span><span className={styles.cardSub}>{subtitle}</span></span><span className={styles.cardArrow} aria-hidden="true">→</span></Link>)}</div>
+  </div>
 }

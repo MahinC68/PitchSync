@@ -4,15 +4,15 @@ const crypto = require('crypto')
 const sharp = require('sharp')
 const { fail } = require('./rosters')
 const KEY = /^[a-f0-9]{32}\.webp$/
-function storageRoot() {
+function storageRoot(label = 'Team') {
   const configured = process.env.LOGO_STORAGE_DIR
-  if (configured && !path.isAbsolute(configured)) throw fail(503,'Team logo storage must use an absolute persistent directory')
-  if (process.env.NODE_ENV === 'production' && !configured) throw fail(503,'Team logo storage is not configured. Configure a persistent upload volume.')
+  if (configured && !path.isAbsolute(configured)) throw fail(503,`${label} logo storage must use an absolute persistent directory`)
+  if (process.env.NODE_ENV === 'production' && !configured) throw fail(503,`${label} logo storage is not configured. Configure a persistent upload volume.`)
   return configured || path.join(__dirname,'../data/team-logos')
 }
-async function normalizeLogo(file) {
+async function normalizeLogo(file, label = 'Team') {
   if (!file?.buffer?.length) throw fail(400,'Choose a PNG, JPEG, or WebP logo')
-  if (file.buffer.length > 2 * 1024 * 1024) throw fail(413,'Team logos must be 2 MB or smaller')
+  if (file.buffer.length > 2 * 1024 * 1024) throw fail(413,`${label} logos must be 2 MB or smaller`)
   const bytes=file.buffer
   const png=bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))
   const jpeg=bytes.length>3 && bytes[0]===255 && bytes[1]===216 && bytes[2]===255
@@ -27,15 +27,15 @@ async function normalizeLogo(file) {
     return await image.rotate().resize(256,256,{fit:'inside',withoutEnlargement:true}).webp({quality:85}).toBuffer()
   } catch { throw fail(400,'Invalid logo. Use a non-animated PNG, JPEG, or WebP up to 4096 × 4096 pixels.') }
 }
-async function storeLogo(buffer) {
-  const root = storageRoot()
+async function storeLogo(buffer, label = 'Team') {
+  const root = storageRoot(label)
   const key = `${crypto.randomBytes(16).toString('hex')}.webp`
   try {
     await fs.mkdir(root,{recursive:true,mode:0o700})
     await fs.writeFile(path.join(root,key),buffer,{flag:'wx',mode:0o600})
   } catch {
     await fs.unlink(path.join(root,key)).catch(()=>{})
-    throw fail(503,'Team logo storage is unavailable. Check the persistent volume and its write permissions.')
+    throw fail(503,`${label} logo storage is unavailable. Check the persistent volume and its write permissions.`)
   }
   return key
 }

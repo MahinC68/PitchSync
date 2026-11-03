@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useSession, setActiveLeague } from '../session'
 import { LeagueContext } from './LeagueContext'
 import LeagueSwitcher from './LeagueSwitcher'
 import LeagueModal from './LeagueModal'
+import LeagueLogo from './LeagueLogo'
 import { NavLink, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import styles from './AppLayout.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
-import { clearSession, getLeagues, getOwnedLeague, createLeague, renameLeague, getPlayoffs } from '../api'
+import { clearSession, getSession, getLeagues, getOwnedLeague, createLeague, renameLeague, getPlayoffs, getLeagueIdentity } from '../api'
 
 const NAV_ITEMS = [
   {
@@ -73,7 +74,20 @@ export default function AppLayout({ children }) {
   const [dialog, setDialog] = useState(null)
   const [reload, setReload] = useState(0)
   const [playoffsLeague, setPlayoffsLeague] = useState(null)
+  const [branding, setBranding] = useState(null)
+  const brandingVersion = useRef(0)
   const isAdmin  = session?.role === 'admin'
+
+  useEffect(() => {
+    let live = true
+    const version = brandingVersion.current
+    if (session?.leagueId) getLeagueIdentity(session.leagueId).then(league => {
+      if (!live || version !== brandingVersion.current) return
+      setBranding(league)
+      setLeagues(current => current.map(item => item.id === league.id ? { ...item, ...league } : item))
+    }).catch(() => { if (live && version === brandingVersion.current) setBranding(null) })
+    return () => { live = false }
+  }, [session?.leagueId, location.pathname])
 
   useEffect(() => {
     let live = true
@@ -107,22 +121,34 @@ export default function AppLayout({ children }) {
     setSwitching(true); setLeagueError('')
     try {
       const owned = await getOwnedLeague(id)
+      brandingVersion.current++
+      setLeagues(current => current.map(league => league.id === owned.id ? owned : league))
+      setBranding(owned)
       setActiveLeague(owned)
     } catch (error) { setLeagueError(error.message) }
     finally { setSwitching(false) }
   }
+  function updateLeague(updated) {
+    brandingVersion.current++
+    setLeagues(current => current.map(league => league.id === updated.id ? { ...league, ...updated } : league))
+    const current = getSession()
+    if (updated.id === current?.leagueId) {
+      setBranding(updated)
+      setActiveLeague({ name:current.leagueName, logo_key:current.leagueLogo, ...updated })
+    }
+  }
   async function saveLeague(name) {
     if (dialog.league) {
       const updated = await renameLeague(dialog.league.id, name)
-      setLeagues(current => current.map(league => league.id === updated.id ? updated : league))
-      if (updated.id === session.leagueId) setActiveLeague(updated)
+      updateLeague(updated)
     } else {
       const created = await createLeague(name)
       setLeagues(current => [...current, created])
       setActiveLeague(created)
     }
   }
-  const leagueContext = { leagues, activeId: session?.leagueId, switching,
+  const identity = branding?.id === session?.leagueId ? branding : leagues.find(league => league.id === session?.leagueId) || { id:session?.leagueId, name:session?.leagueName, logo_key:session?.leagueLogo }
+  const leagueContext = { leagues, activeId: session?.leagueId, switching, identity, updateLeague,
     switchLeague, openCreate: event => modalConfig(null, event), openRename: (league, event) => modalConfig(league, event) }
 
 
@@ -147,7 +173,7 @@ export default function AppLayout({ children }) {
 
         <div className={styles.leagueIdentity}>
           <span className={styles.workspaceLabel}>Your league</span>
-          {isAdmin ? <LeagueSwitcher /> : <strong>{session.leagueName || 'League dashboard'}</strong>}
+          {isAdmin ? <LeagueSwitcher /> : <div className={styles.playerLeague}><LeagueLogo league={identity}/><strong>{identity.name || 'League dashboard'}</strong></div>}
           <span className={styles.roleBadge}>{isAdmin ? 'Admin workspace' : 'Player workspace'}</span>
         </div>
         <nav className={styles.sideNav} aria-label="Main navigation">

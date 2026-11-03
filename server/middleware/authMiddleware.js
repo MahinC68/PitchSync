@@ -26,7 +26,7 @@ async function league(req, res, next) {
   }
   try {
     const { rows: [owned] } = await db.query(
-      `SELECT l.id, l.name, l.access_code FROM leagues l
+      `SELECT l.id, l.name, l.access_code, l.logo_key FROM leagues l
        JOIN admin_leagues al ON al.league_id = l.id
        WHERE al.admin_id = $1 ${requested === undefined ? '' : 'AND l.id = $2'}
        ORDER BY l.created_at, l.id LIMIT 1`,
