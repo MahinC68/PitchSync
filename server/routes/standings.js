@@ -11,7 +11,7 @@ router.get('/:league_id', async (req, res, next) => {
     client = await db.pool.connect()
     await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY')
     const rules = await getRules(client, req.params.league_id)
-    const { rows: teams } = await client.query('SELECT id, name FROM teams WHERE league_id = $1 ORDER BY id', [req.params.league_id])
+    const { rows: teams } = await client.query('SELECT id, name, logo_key FROM teams WHERE league_id = $1 ORDER BY id', [req.params.league_id])
     const { rows: matches } = await client.query("SELECT *, date::text FROM matches WHERE league_id = $1 AND status = 'completed'", [req.params.league_id])
     const { rows: adjustments } = await client.query('SELECT team_id, points FROM points_adjustments WHERE league_id = $1', [req.params.league_id])
     await client.query('COMMIT')

@@ -10,7 +10,7 @@ const CARDS = [
   {
     to: '/settings/teams',
     title: 'Manage Teams',
-    subtitle: 'Add, rename, or remove teams from the league',
+    subtitle: 'Teams, logos, roster limits, and player management',
     icon: (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
         <rect x="1" y="7" width="18" height="12" stroke="currentColor" strokeWidth="1.2" />
@@ -22,7 +22,7 @@ const CARDS = [
   {
     to: '/settings/players',
     title: 'Manage Players',
-    subtitle: 'Add or remove players and assign them to teams',
+    subtitle: 'Open team rosters to add, rename, or remove players',
     icon: (
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
         <circle cx="10" cy="6" r="4" stroke="currentColor" strokeWidth="1.2" />

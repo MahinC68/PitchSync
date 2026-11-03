@@ -1,3 +1,4 @@
+import TeamLogo from '../components/TeamLogo'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { DatePicker, TeamPicker } from '../components/FilterPicker'
 import styles from './Schedule.module.css'
@@ -141,9 +142,9 @@ export default function Schedule() {
                   <div key={f.id} className={`${styles.fixtureRow} ${isAdmin ? styles.fixtureRowAdmin : ''}`}>
                     <span className={styles.rowDate}>{formatDate(f.date)}</span>
                     <span className={styles.rowMatchup}>
-                      <span className={styles.teamName}>{f.home_team_name}</span>
+                      <span className={styles.teamName}><span>{f.home_team_name}</span><TeamLogo name={f.home_team_name} logoKey={f.home_team_logo} size="compact" /></span>
                       <span className={styles.vs}>vs</span>
-                      <span className={styles.teamName}>{f.away_team_name}</span>
+                      <span className={styles.teamName}><TeamLogo name={f.away_team_name} logoKey={f.away_team_logo} size="compact" /><span>{f.away_team_name}</span></span>
                     </span>
                     <span className={styles.rowTime}>{formatTime(f.time)}</span>
                     {isAdmin && (
@@ -204,9 +205,9 @@ export default function Schedule() {
                   <div key={r.id} className={`${styles.resultRow} ${isAdmin ? styles.resultRowAdmin : ''}`}>
                     <span className={styles.rowDate}>{formatDate(r.date)}</span>
                     <span className={styles.rowMatchup}>
-                      <span className={styles.teamName}>{r.home_team_name}</span>
+                      <span className={styles.teamName}><span>{r.home_team_name}</span><TeamLogo name={r.home_team_name} logoKey={r.home_team_logo} size="compact" /></span>
                       <span className={styles.score}>{r.home_score} – {r.away_score}{r.forfeit_team_id != null && <small className={styles.forfeitTag}>Forfeit</small>}</span>
-                      <span className={styles.teamName}>{r.away_team_name}</span>
+                      <span className={styles.teamName}><TeamLogo name={r.away_team_name} logoKey={r.away_team_logo} size="compact" /><span>{r.away_team_name}</span></span>
                     </span>
                     <span className={styles.rowTime}>{formatTime(r.time)}</span>
                     {isAdmin && (

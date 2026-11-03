@@ -48,3 +48,6 @@ server/coverage/
 
 # Local original-design comparison
 /old-design/
+
+# Persistent local uploads (deploy using a mounted volume)
+/server/data/

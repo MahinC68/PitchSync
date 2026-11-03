@@ -8,7 +8,7 @@ export { getSession, saveSession, clearSession } from './session'
 async function apiFetch(path, options = {}) {
   const session = getSession()
   const headers = {
-    'Content-Type': 'application/json',
+    ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
     ...(session?.role === 'admin' && session.token ? { Authorization: `Bearer ${session.token}` } : {}),
     ...(session?.role === 'admin' && session.leagueId ? { 'X-League-Id': String(session.leagueId) } : {}),
     ...options.headers,
@@ -93,10 +93,10 @@ export async function deleteFixture(id) {
   return apiFetch(`/api/fixtures/${id}`, { method: 'DELETE' })
 }
 
-export async function addResult(fixtureId, homeScore, awayScore) {
+export async function addResult(fixtureId, homeScore, awayScore, scorers) {
   const body = await apiFetch(`/api/fixtures/${fixtureId}/result`, {
     method: 'PUT',
-    body: JSON.stringify({ home_score: homeScore, away_score: awayScore }),
+    body: JSON.stringify({ home_score: homeScore, away_score: awayScore, ...(scorers === undefined ? {} : { scorers }) }),
   })
   return body.data
 }
@@ -190,3 +190,10 @@ export async function markForfeit(id, teamId) {
   return (await apiFetch(`/api/fixtures/${id}/forfeit`, { method: 'PUT', body: JSON.stringify({ forfeiting_team_id: teamId }) })).data
 }
 export async function clearForfeit(id) { return (await apiFetch(`/api/fixtures/${id}/forfeit`, { method: 'DELETE' })).data }
+
+export async function renamePlayer(id, name) { return (await apiFetch(`/api/players/${id}`, { method:'PUT', body:JSON.stringify({name}) })).data }
+export async function getRosterSettings() { return (await apiFetch('/api/teams/roster-settings')).data }
+export async function saveRosterSettings(limit) { return (await apiFetch('/api/teams/roster-settings', {method:'PUT',body:JSON.stringify({max_roster_size:limit})})).data }
+export async function uploadTeamLogo(id, file) { const body=new FormData();body.append('logo',file);return (await apiFetch(`/api/teams/${id}/logo`,{method:'PUT',body})).data }
+export async function removeTeamLogo(id) { return (await apiFetch(`/api/teams/${id}/logo`,{method:'DELETE'})).data }
+export function teamLogoUrl(key) { return /^[a-f0-9]{32}\.webp$/.test(key || '') ? `${BASE}/api/team-logos/${key}` : null }

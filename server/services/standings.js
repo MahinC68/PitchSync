@@ -34,7 +34,7 @@ function rankTied(teams, criteria, index, matches, rules) {
 }
 
 function calculateStandings(teams, allMatches, adjustments = [], rules = DEFAULT_RULES) {
-  const table = new Map(teams.map(team => [team.id, { teamId: team.id, teamName: team.name,
+  const table = new Map(teams.map(team => [team.id, { teamId: team.id, teamName: team.name, teamLogo: team.logo_key ?? null,
     mp: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, basePts: 0, manualAdjustment: 0, forfeitPenalty: 0, forfeits: 0, netAdjustment: 0, pts: 0, form: [], recentPoints: 0 }]))
   const matches = allMatches.filter(match => match.status === 'completed' && table.has(match.home_team_id) && table.has(match.away_team_id) && effectiveScore(match).every(Number.isInteger))
     .sort((a, b) => String(a.date).localeCompare(String(b.date)) || a.id - b.id)

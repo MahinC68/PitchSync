@@ -1,3 +1,4 @@
+import TeamLogo from '../components/TeamLogo'
 import { flushSync } from 'react-dom'
 import StatsMenu from '../components/StatsMenu'
 import { QUICK_OPTIONS, LEAGUE_OPTIONS, quickStat, leagueStats, readStatsPreferences } from './standingsStats'
@@ -188,7 +189,7 @@ export default function Standings() {
                       <span className={styles.cPos}>{t.position}</span>
 
                       <span className={styles.cTeam}>
-                        <span className={styles.teamCrest} aria-hidden="true">{t.teamName.split(' ').map(word => word[0]).slice(0, 2).join('')}</span>
+                        <TeamLogo name={t.teamName} logoKey={t.teamLogo} />
                         <span className={styles.teamName}>{t.teamName}</span>
                       </span>
 

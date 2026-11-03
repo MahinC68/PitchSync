@@ -1,0 +1,7 @@
+.logo { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 32px; height: 36px; vertical-align: middle; }
+.logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.placeholder { width: 100%; height: 100%; display: grid; place-items: center; clip-path: polygon(0 0,100% 0,100% 75%,50% 100%,0 75%); background: linear-gradient(140deg,#c6a86835,#c6a8680c); color: #dac38e; font-size: 10px; font-weight: 500; }
+.compact { width: 24px; height: 28px; }
+.compact .placeholder { font-size: 8px; }
+.large { width: 64px; height: 72px; }
+.large .placeholder { font-size: 20px; }

@@ -37,7 +37,7 @@ PitchSync is a full stack web application for managing recreational soccer leagu
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20.9+
 - PostgreSQL database
 
 ### Backend
@@ -176,3 +176,7 @@ See [the Phase 1 migration, API, and verification guide](docs/multi-league.md) b
 ## Custom league rules
 
 Settings → League Rules configures league points, tiebreaker priorities, manual team adjustments, match duration, and forfeit defaults. Standings recalculate from completed results; Schedule can record or clear forfeits without erasing original scores or scorer records. See [the Phase 2 rules guide](docs/league-rules.md) for ranking semantics, migrations, validation, and testing.
+
+## Teams and players
+
+Settings → Manage Teams / Manage Players opens a shared workspace for team logos, roster limits and player renames. See [the Phase 3 roster guide](docs/team-rosters.md) for the migration, API changes, tests and required persistent logo storage configuration.

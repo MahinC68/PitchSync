@@ -17,8 +17,8 @@ router.get('/:league_id', async (req, res) => {
          CASE WHEN m.forfeit_team_id IS NULL THEN m.away_score ELSE m.forfeit_away_score END AS away_score,
          m.forfeit_team_id, m.forfeit_penalty, m.pre_forfeit_status,
          m.date::text, m.time::text, m.status,
-         ht.name AS home_team_name,
-         at.name AS away_team_name
+         ht.name AS home_team_name, ht.logo_key AS home_team_logo,
+         at.name AS away_team_name, at.logo_key AS away_team_logo
        FROM   matches m
        JOIN   teams ht ON ht.id = m.home_team_id
        JOIN   teams at ON at.id = m.away_team_id
@@ -76,34 +76,13 @@ router.post('/', authMiddleware, async (req, res) => {
 })
 
 // ── PUT /api/fixtures/:id/result (admin only) ────────────────────────────────
-router.put('/:id/result', authMiddleware, async (req, res) => {
-  const { home_score, away_score } = req.body
-
-  if (!integer(home_score, 0, 99) || !integer(away_score, 0, 99)) {
-    return res.status(400).json({ success: false, error: 'Scores must be integers between 0 and 99' })
-  }
-
+router.put('/:id/result', authMiddleware, async (req,res,next) => {
+  if (!/^\d+$/.test(req.params.id)) return res.status(400).json({error:'Invalid fixture ID'})
   try {
-    const { rows: [match] } = await db.query(
-      `UPDATE matches
-       SET    home_score = $1, away_score = $2, status = 'completed'
-       WHERE  id = $3 AND league_id = $4 AND forfeit_team_id IS NULL
-       RETURNING id, league_id, home_team_id, away_team_id,
-                 home_score, away_score, date::text, time::text, status`,
-      [home_score, away_score, req.params.id, req.admin.leagueId]
-    )
-
-    if (!match) {
-      const forfeited = await db.query('SELECT 1 FROM matches WHERE id=$1 AND league_id=$2 AND forfeit_team_id IS NOT NULL', [req.params.id, req.admin.leagueId])
-      if (forfeited.rowCount) return res.status(409).json({ error: 'Clear the forfeit before editing the original result' })
-      return res.status(404).json({ success: false, error: 'Fixture not found' })
-    }
-
-    return res.json({ success: true, data: match })
-  } catch (err) {
-    console.error('fixtures PUT result:', err.message)
-    return res.status(500).json({ success: false, error: 'Server error' })
-  }
+    const { saveResult } = require('../services/results')
+    const saved = await saveResult(req.admin.leagueId,req.params.id,req.body.home_score,req.body.away_score,req.body.scorers)
+    res.json({success:true,data:saved})
+  } catch (error) { next(error) }
 })
 
 // Record a separate awarded outcome. Original scores and scorers remain intact.
@@ -113,12 +92,12 @@ router.put('/:id/forfeit', authMiddleware, async (req, res, next) => {
   try {
     client = await db.pool.connect()
     await client.query('BEGIN')
+    const rules = await getRules(client, req.admin.leagueId, true)
     const { rows: [match] } = await client.query('SELECT * FROM matches WHERE id=$1 AND league_id=$2 FOR UPDATE', [req.params.id, req.admin.leagueId])
     if (!match) { await client.query('ROLLBACK'); return res.status(404).json({ error: 'Fixture not found' }) }
     if (match.forfeit_team_id != null) { await client.query('ROLLBACK'); return res.status(409).json({ error: 'This fixture is already forfeited. Clear it before recording a different forfeit.' }) }
     const team = req.body.forfeiting_team_id
     if (![match.home_team_id, match.away_team_id].includes(team)) { await client.query('ROLLBACK'); return res.status(400).json({ error: 'Forfeiting team must be playing in this fixture' }) }
-    const rules = await getRules(client, req.admin.leagueId, true)
     const home = team === match.home_team_id ? rules.forfeit_loser_score : rules.forfeit_winner_score
     const away = team === match.away_team_id ? rules.forfeit_loser_score : rules.forfeit_winner_score
     const { rows: [saved] } = await client.query(`UPDATE matches SET pre_forfeit_status=status, status='completed', forfeit_team_id=$3,

@@ -2,7 +2,7 @@ import { SelectPicker } from './FilterPicker'
 import useModalMotion from './useModalMotion'
 import { useState, useEffect } from 'react'
 import styles from './Modal.module.css'
-import { getSession, getFixtures, getPlayersByTeam, addResult, addPlayer, addGoal } from '../api'
+import { getSession, getFixtures, getPlayersByTeam, addResult, addPlayer } from '../api'
 
 const UNKNOWN    = 'unknown'
 const OWN_GOAL   = 'own_goal'
@@ -197,46 +197,13 @@ export default function AddResultModal({ onClose, onSuccess, origin }) {
     setSaving(true)
     setError('')
     try {
-      await addResult(Number(fixtureId), Number(homeScore), Number(awayScore))
-
-      const allScorers = [
-        ...homeScorers.map(s => ({ ...s, teamId: fixture.home_team_id })),
-        ...awayScorers.map(s => ({ ...s, teamId: fixture.away_team_id })),
-      ]
-
-      // Per-submit cache to prevent duplicate creates if admin left a slot in
-      // "new player" mode without clicking "Add" first.
-      const sessionCreated = {}
-
-      for (const scorer of allScorers) {
-        if (scorer.value === UNKNOWN || scorer.value === OWN_GOAL) continue
-
-        let playerId
-        if (scorer.value === NEW_PLAYER) {
-          const name = scorer.newName.trim()
-          if (!name) continue
-
-          const cacheKey = `${scorer.teamId}:${name.toLowerCase()}`
-          if (sessionCreated[cacheKey]) {
-            playerId = sessionCreated[cacheKey]
-          } else {
-            const existing = (players[scorer.teamId] ?? []).find(
-              p => p.name.toLowerCase() === name.toLowerCase()
-            )
-            if (existing) {
-              playerId = existing.id
-            } else {
-              const player = await addPlayer(name, scorer.teamId)
-              playerId = player.id
-              sessionCreated[cacheKey] = player.id
-            }
-          }
-        } else {
-          playerId = Number(scorer.value)
-        }
-
-        await addGoal(Number(fixtureId), playerId, Number(scorer.teamId))
-      }
+      const scorers = [
+        ...homeScorers.map(scorer => ({...scorer, team_id:fixture.home_team_id})),
+        ...awayScorers.map(scorer => ({...scorer, team_id:fixture.away_team_id})),
+      ].filter(scorer => scorer.value !== UNKNOWN && scorer.value !== OWN_GOAL && (scorer.value !== NEW_PLAYER || scorer.newName.trim()))
+        .map(scorer => scorer.value === NEW_PLAYER ? {team_id:scorer.team_id,new_name:scorer.newName.trim()} : {team_id:scorer.team_id,player_id:Number(scorer.value)})
+      // The server creates scorers, enforces capacity, and saves the result atomically.
+      await addResult(Number(fixtureId), Number(homeScore), Number(awayScore), scorers)
 
       onSuccess()
     } catch (err) {

@@ -495,3 +495,7 @@
   .rowMatchup { grid-column: 1 / -1; grid-row: 2; grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr); }
   .rowActions { grid-column: 1 / -1; grid-row: 3; }
 }
+
+.teamName { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.rowMatchup .teamName:first-child { justify-content: flex-end; }
+.teamName > span:not([aria-hidden]) { min-width: 0; overflow-wrap: anywhere; }

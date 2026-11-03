@@ -23,6 +23,7 @@ const playersRoutes   = require('./routes/players')
 const teamsRoutes     = require('./routes/teams')
 const goalsRoutes     = require('./routes/goals')
 
+app.use('/api/team-logos', require('./routes/logos'))
 app.use('/api/rules', require('./routes/rules'))
 app.use('/api/leagues', require('./routes/leagues'))
 
@@ -44,7 +45,8 @@ app.get('/api/health', (_req, res) => {
 // Always return JSON errors, including rejected database operations.
 app.use((error, _req, res, _next) => {
   console.error(error.message)
-  res.status(500).json({ success: false, error: 'Server error' })
+  const status = Number.isInteger(error.status) && error.status >= 400 && error.status < 500 ? error.status : error.status === 503 ? 503 : 500
+  res.status(status).json({ success: false, error: status === 500 ? 'Server error' : error.message })
 })
 
 if (process.env.NODE_ENV !== 'test') {
