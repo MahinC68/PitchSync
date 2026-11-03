@@ -5,6 +5,8 @@ import { useLeagues } from '../components/LeagueContext'
 import LeagueSwitcher from '../components/LeagueSwitcher'
 
 const CARDS = [
+  { to: '/settings/playoffs', title: 'Playoffs', subtitle: 'Qualification zones, seeded brackets, and knockout results',
+    icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 3h5v5H2M2 12h5v5H2M7 5h5v10H7M12 10h6" stroke="currentColor" strokeWidth="1.2" /></svg> },
   { to: '/settings/rules', title: 'League Rules', subtitle: 'Points, tiebreakers, adjustments, match length, and forfeits',
     icon: <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14M7 3v4M13 8v4M9 13v4" stroke="currentColor" strokeWidth="1.2" /></svg> },
   {

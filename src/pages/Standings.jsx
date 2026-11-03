@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import styles from './Standings.module.css'
 import AddResultModal from '../components/AddResultModal'
 import { getStandings, getSession } from '../api'
+import { Link } from 'react-router-dom'
 
 export default function Standings() {
   const [standings,       setStandings]       = useState([])
@@ -184,7 +185,8 @@ export default function Standings() {
                   {standings.map(t => (
                     <div
                       key={t.teamId}
-                      className={`${styles.tableRow} ${t.position <= 2 ? styles.tableRowQual : ''}`}
+                      className={`${styles.tableRow} ${t.inQualificationZone ? styles.tableRowQual : ''}`}
+                      data-qualification-zone={t.inQualificationZone || undefined}
                     >
                       <span className={styles.cPos}>{t.position}</span>
 
@@ -216,6 +218,7 @@ export default function Standings() {
 
                 </div>
               </div>
+              {standings.some(team => team.inQualificationZone) && <p className={styles.pointsNote}><span style={{color:'var(--color-gold)'}}>▎</span> Playoff qualification zone · based on the current standings. <Link to="/playoffs" viewTransition style={{color:'var(--color-gold)'}}>View playoffs →</Link></p>}
               {standings.some(team => team.manualAdjustment !== 0 || team.forfeitPenalty !== 0) && <p className={styles.pointsNote}>Points include manual adjustments and recorded forfeit deductions. Hover over a points total for the breakdown.</p>}
               {standings.some(team => team.forfeits > 0) && <p className={styles.pointsNote}>Team goal totals include awarded forfeit scores. Player goal tallies exclude forfeited matches.</p>}
             </section>

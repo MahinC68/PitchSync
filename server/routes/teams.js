@@ -76,6 +76,6 @@ router.delete('/:id',async(req,res,next)=>{
     const {rows:[team]}=await db.query('DELETE FROM teams WHERE id=$1 AND league_id=$2 RETURNING logo_key',[req.params.id,req.admin.leagueId])
     if(!team)return res.status(404).json({error:'Team not found'})
     await removeLogo(team.logo_key);res.json({success:true,data:null})
-  }catch(error){if(error.code==='23503')return res.status(409).json({error:'This team has fixtures or recorded goals. Remove the relevant fixtures first; historical data will not be deleted automatically.'});next(error)}
+  }catch(error){if(error.code==='23503')return res.status(409).json({error:'This team has fixtures or recorded goals, or belongs to a saved playoff bracket. Historical data will not be deleted automatically; teams in saved brackets must be retained.'});next(error)}
 })
 module.exports=router

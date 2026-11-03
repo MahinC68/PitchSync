@@ -58,4 +58,12 @@ function calculateStandings(teams, allMatches, adjustments = [], rules = DEFAULT
   return partitions([...table.values()], team => team.pts).flatMap(group => rankTied(group, rules.tiebreakers, 0, matches, rules))
     .map((team, index) => ({ ...team, position: index + 1 }))
 }
-module.exports = { calculateStandings, effectiveScore }
+async function readStandings(client, leagueId) {
+  const { getRules } = require('./rules')
+  const rules = await getRules(client, leagueId)
+  const { rows: teams } = await client.query('SELECT id, name, logo_key FROM teams WHERE league_id=$1 ORDER BY id', [leagueId])
+  const { rows: matches } = await client.query("SELECT *, date::text FROM matches WHERE league_id=$1 AND status='completed'", [leagueId])
+  const { rows: adjustments } = await client.query('SELECT team_id, points FROM points_adjustments WHERE league_id=$1', [leagueId])
+  return { rules, standings: calculateStandings(teams, matches, adjustments, rules) }
+}
+module.exports = { calculateStandings, effectiveScore, readStandings }

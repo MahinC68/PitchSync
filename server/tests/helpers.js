@@ -78,6 +78,7 @@ async function createTestMatch(leagueId, homeTeamId, awayTeamId, opts = {}) {
 
 async function cleanupLeague(leagueId) {
   const { rows: owners } = await db.query('SELECT admin_id FROM admin_leagues WHERE league_id = $1', [leagueId])
+  await db.query('DELETE FROM playoff_brackets WHERE league_id=$1', [leagueId])
   // Delete in FK dependency order: goals → matches/players → teams → admins → league
   await db.query(
     'DELETE FROM goals WHERE match_id IN (SELECT id FROM matches WHERE league_id = $1)',

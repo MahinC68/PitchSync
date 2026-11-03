@@ -180,3 +180,7 @@ Settings → League Rules configures league points, tiebreaker priorities, manua
 ## Teams and players
 
 Settings → Manage Teams / Manage Players opens a shared workspace for team logos, roster limits and player renames. See [the Phase 3 roster guide](docs/team-rosters.md) for the migration, API changes, tests and required persistent logo storage configuration.
+
+## Playoffs and qualification zones
+
+Settings → Playoffs enables optional 2-, 4- or 8-team knockout brackets, seeded from the league's current standings, with an optional third-place match. Preview before saving; record results and penalty winners in the dedicated Playoffs view. Regular standings and player goals stay separate. See [the Phase 5 guide](docs/playoffs.md) for migration, result-edit conflict resolution, API and verification details, including the missing Phase 4 implementation in this checkout.

@@ -245,7 +245,7 @@
   z-index: 1;
 }
 
-/* top-2 qualification accent */
+/* Configured playoff qualification zone */
 .tableRowQual {
   box-shadow: inset 3px 0 0 rgba(180, 151, 90, 0.375);
   background: rgba(180, 151, 90, 0.03);

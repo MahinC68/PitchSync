@@ -23,7 +23,10 @@ async function apiFetch(path, options = {}) {
   }
 
   if (!res.ok) {
-    throw new Error(json.error || json.message || 'Request failed')
+    const error = new Error(json.error || json.message || 'Request failed')
+    error.code = json.code
+    error.details = json.details
+    throw error
   }
 
   return json
@@ -197,3 +200,9 @@ export async function saveRosterSettings(limit) { return (await apiFetch('/api/t
 export async function uploadTeamLogo(id, file) { const body=new FormData();body.append('logo',file);return (await apiFetch(`/api/teams/${id}/logo`,{method:'PUT',body})).data }
 export async function removeTeamLogo(id) { return (await apiFetch(`/api/teams/${id}/logo`,{method:'DELETE'})).data }
 export function teamLogoUrl(key) { return /^[a-f0-9]{32}\.webp$/.test(key || '') ? `${BASE}/api/team-logos/${key}` : null }
+
+export async function getPlayoffs(leagueId) { return (await apiFetch(`/api/playoffs/league/${leagueId}`)).data }
+export async function savePlayoffSettings(settings) { return (await apiFetch('/api/playoffs/settings',{method:'PUT',body:JSON.stringify(settings)})).data }
+export async function previewPlayoffs() { return (await apiFetch('/api/playoffs/preview',{method:'POST',body:'{}'})).data }
+export async function generatePlayoffs(token) { return (await apiFetch('/api/playoffs/bracket',{method:'POST',body:JSON.stringify({token})})).data }
+export async function savePlayoffResult(id,body,clear=false) { return (await apiFetch(`/api/playoffs/matches/${id}/result`,{method:clear?'DELETE':'PUT',body:JSON.stringify(body)})).data }

@@ -6,7 +6,7 @@ import LeagueModal from './LeagueModal'
 import { NavLink, Navigate, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import styles from './AppLayout.module.css'
 import logo from '../../icons/PitchSync-new-gold.png'
-import { clearSession, getLeagues, getOwnedLeague, createLeague, renameLeague } from '../api'
+import { clearSession, getLeagues, getOwnedLeague, createLeague, renameLeague, getPlayoffs } from '../api'
 
 const NAV_ITEMS = [
   {
@@ -44,6 +44,10 @@ const NAV_ITEMS = [
     ),
   },
   {
+    to: '/playoffs', label: 'Playoffs', playoffsOnly: true,
+    icon: <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 3h5v5H2M2 12h5v5H2M7 5h5v10H7M12 10h6" stroke="currentColor" strokeWidth="1.2" /></svg>,
+  },
+  {
     to: '/settings',
     label: 'Settings',
     adminOnly: true,
@@ -68,7 +72,16 @@ export default function AppLayout({ children }) {
   const [leagueError, setLeagueError] = useState('')
   const [dialog, setDialog] = useState(null)
   const [reload, setReload] = useState(0)
+  const [playoffsLeague, setPlayoffsLeague] = useState(null)
   const isAdmin  = session?.role === 'admin'
+
+  useEffect(() => {
+    let live = true
+    if (session?.leagueId) getPlayoffs(session.leagueId).then(data => {
+      if (live) setPlayoffsLeague(data.settings.enabled || data.bracket ? session.leagueId : null)
+    }).catch(() => { if (live) setPlayoffsLeague(null) })
+    return () => { live = false }
+  }, [session?.leagueId, location.pathname])
 
   useEffect(() => {
     let live = true
@@ -118,7 +131,7 @@ export default function AppLayout({ children }) {
     navigate('/')
   }
 
-  const visibleNav = NAV_ITEMS.filter(item => !item.adminOnly || isAdmin)
+  const visibleNav = NAV_ITEMS.filter(item => (!item.adminOnly || isAdmin) && (!item.playoffsOnly || playoffsLeague === session?.leagueId))
 
   if (!session) return <Navigate to="/login" replace />
   if (!isAdmin && location.pathname.startsWith('/settings')) return <Navigate to="/standings" replace />

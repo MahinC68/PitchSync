@@ -25,6 +25,7 @@ const goalsRoutes     = require('./routes/goals')
 
 app.use('/api/team-logos', require('./routes/logos'))
 app.use('/api/rules', require('./routes/rules'))
+app.use('/api/playoffs', require('./routes/playoffs'))
 app.use('/api/leagues', require('./routes/leagues'))
 
 app.use('/api/auth',      authRoutes)
@@ -46,7 +47,8 @@ app.get('/api/health', (_req, res) => {
 app.use((error, _req, res, _next) => {
   console.error(error.message)
   const status = Number.isInteger(error.status) && error.status >= 400 && error.status < 500 ? error.status : error.status === 503 ? 503 : 500
-  res.status(status).json({ success: false, error: status === 500 ? 'Server error' : error.message })
+  res.status(status).json({ success: false, error: status === 500 ? 'Server error' : error.message,
+    ...(error.code === 'DOWNSTREAM_RESULTS' || error.code === 'STALE_BRACKET' ? { code:error.code, details:error.details } : {}) })
 })
 
 if (process.env.NODE_ENV !== 'test') {
