@@ -32,7 +32,7 @@ router.get('/match/:match_id', authMiddleware, async (req, res) => {
 router.delete('/match/:match_id', authMiddleware, async (req, res) => {
   try {
     const { rowCount } = await db.query(
-      'SELECT 1 FROM matches WHERE id = $1 AND league_id = $2',
+      'SELECT 1 FROM matches WHERE id = $1 AND league_id = $2 AND forfeit_team_id IS NULL',
       [req.params.match_id, req.admin.leagueId]
     )
     if (rowCount === 0) return res.status(403).json({ success: false, error: 'Forbidden' })
@@ -70,7 +70,7 @@ router.post('/', authMiddleware, async (req, res) => {
        SELECT m.id, p.id, t.id FROM matches m
        JOIN teams t ON t.id = $3 AND t.league_id = m.league_id
        JOIN players p ON p.id = $2 AND p.team_id = t.id AND p.league_id = m.league_id
-       WHERE m.id = $1 AND m.league_id = $4 AND t.id IN (m.home_team_id, m.away_team_id)
+       WHERE m.id = $1 AND m.league_id = $4 AND m.forfeit_team_id IS NULL AND t.id IN (m.home_team_id, m.away_team_id)
        RETURNING *`,
       [match_id, player_id, team_id, req.admin.leagueId]
     )

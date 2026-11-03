@@ -178,3 +178,15 @@ export async function createLeague(name) {
 export async function renameLeague(id, name) {
   return (await apiFetch(`/api/leagues/${id}`, { method: 'PATCH', body: JSON.stringify({ name }) })).data
 }
+
+export async function getLeagueRules() { return (await apiFetch('/api/rules')).data }
+export async function saveLeagueRules(rules) { return (await apiFetch('/api/rules', { method: 'PUT', body: JSON.stringify(rules) })).data }
+export async function getPointsAdjustments() { return (await apiFetch('/api/rules/adjustments')).data }
+export async function savePointsAdjustment(id, data) {
+  return (await apiFetch(`/api/rules/adjustments${id ? `/${id}` : ''}`, { method: id ? 'PUT' : 'POST', body: JSON.stringify(data) })).data
+}
+export async function deletePointsAdjustment(id) { return apiFetch(`/api/rules/adjustments/${id}`, { method: 'DELETE' }) }
+export async function markForfeit(id, teamId) {
+  return (await apiFetch(`/api/fixtures/${id}/forfeit`, { method: 'PUT', body: JSON.stringify({ forfeiting_team_id: teamId }) })).data
+}
+export async function clearForfeit(id) { return (await apiFetch(`/api/fixtures/${id}/forfeit`, { method: 'DELETE' })).data }

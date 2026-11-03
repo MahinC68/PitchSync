@@ -551,3 +551,6 @@
 .statBox { min-width: 0; }
 .statValue { line-height: 1.5; overflow-wrap: anywhere; }
 .tied { display: block; color: var(--color-text-muted); font-size: 10px; font-weight: 300; margin-top: 3px; }
+
+.pointsAdjustment { display: block; font-size: 9px; font-weight: 300; margin-top: 4px; color: var(--color-text-muted); }
+.pointsNote { font-size: 11px; line-height: 1.6; color: var(--color-text-muted); padding: 14px 0 0; }

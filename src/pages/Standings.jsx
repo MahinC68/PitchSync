@@ -201,7 +201,9 @@ export default function Standings() {
                       <span className={`${styles.cNum} ${t.gd > 0 ? styles.gdPlus : t.gd < 0 ? styles.gdMinus : ''}`}>
                         {t.gd > 0 ? `+${t.gd}` : t.gd}
                       </span>
-                      <span className={styles.cPts}>{t.pts}</span>
+                      <span className={styles.cPts} title={`Match points: ${t.basePts}; manual adjustment: ${t.manualAdjustment}; forfeit deduction: ${t.forfeitPenalty}`}>
+                        {t.pts}{(t.manualAdjustment !== 0 || t.forfeitPenalty !== 0) && <small className={styles.pointsAdjustment}>{t.netAdjustment > 0 ? '+' : ''}{t.netAdjustment} adj.</small>}
+                      </span>
 
                       <span className={styles.cForm}>
                         {t.form.map((r, i) => (
@@ -213,6 +215,8 @@ export default function Standings() {
 
                 </div>
               </div>
+              {standings.some(team => team.manualAdjustment !== 0 || team.forfeitPenalty !== 0) && <p className={styles.pointsNote}>Points include manual adjustments and recorded forfeit deductions. Hover over a points total for the breakdown.</p>}
+              {standings.some(team => team.forfeits > 0) && <p className={styles.pointsNote}>Team goal totals include awarded forfeit scores. Player goal tallies exclude forfeited matches.</p>}
             </section>
 
             <aside className={styles.side}>

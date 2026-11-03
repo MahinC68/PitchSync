@@ -3,6 +3,7 @@ import { DatePicker, TeamPicker } from '../components/FilterPicker'
 import styles from './Schedule.module.css'
 import AddFixtureModal from '../components/AddFixtureModal'
 import AddResultModal from '../components/AddResultModal'
+import ForfeitModal from '../components/ForfeitModal'
 import EditResultModal from '../components/EditResultModal'
 import { getFixtures, getSession, deleteFixture } from '../api'
 
@@ -32,6 +33,7 @@ export default function Schedule() {
     open()
   }
 
+  const [forfeitFixture, setForfeitFixture] = useState(null)
   const [editFixture,      setEditFixture]      = useState(null)
 
   const [deleteConfirmId, setDeleteConfirmId] = useState(null)
@@ -149,6 +151,7 @@ export default function Schedule() {
                         <button className={styles.btnInlineResult} onClick={event => openModal(event, () => setShowResultModal(true))}>
                           Add Result
                         </button>
+                        <button className={styles.btnInlineResult} onClick={event => openModal(event, () => setForfeitFixture(f))}>Forfeit</button>
                         {deleteConfirmId === f.id ? (
                           <>
                             <span className={styles.deleteConfirmText}>Delete?</span>
@@ -202,15 +205,16 @@ export default function Schedule() {
                     <span className={styles.rowDate}>{formatDate(r.date)}</span>
                     <span className={styles.rowMatchup}>
                       <span className={styles.teamName}>{r.home_team_name}</span>
-                      <span className={styles.score}>{r.home_score} – {r.away_score}</span>
+                      <span className={styles.score}>{r.home_score} – {r.away_score}{r.forfeit_team_id != null && <small className={styles.forfeitTag}>Forfeit</small>}</span>
                       <span className={styles.teamName}>{r.away_team_name}</span>
                     </span>
                     <span className={styles.rowTime}>{formatTime(r.time)}</span>
                     {isAdmin && (
                       <div className={styles.rowActions}>
-                        <button className={styles.btnInlineResult} onClick={event => openModal(event, () => setEditFixture(r))}>
-                          Edit
+                        <button className={styles.btnInlineResult} onClick={event => openModal(event, () => r.forfeit_team_id != null ? setForfeitFixture(r) : setEditFixture(r))}>
+                          {r.forfeit_team_id != null ? 'View forfeit' : 'Edit'}
                         </button>
+                        {r.forfeit_team_id == null && <button className={styles.btnInlineResult} onClick={event => openModal(event, () => setForfeitFixture(r))}>Forfeit</button>}
                         {deleteConfirmId === r.id ? (
                           <>
                             <span className={styles.deleteConfirmText}>Delete?</span>
@@ -237,6 +241,7 @@ export default function Schedule() {
       {showResultModal && (
         <AddResultModal origin={modalOrigin} onClose={() => setShowResultModal(false)} onSuccess={() => { setShowResultModal(false); loadFixtures() }} />
       )}
+      {forfeitFixture && <ForfeitModal fixture={forfeitFixture} origin={modalOrigin} onClose={() => setForfeitFixture(null)} onSuccess={() => { setForfeitFixture(null); loadFixtures() }} />}
       {editFixture && (
         <EditResultModal origin={modalOrigin}
           fixture={editFixture}

@@ -34,7 +34,7 @@ router.get('/:league_id/top-scorers', async (req, res) => {
        JOIN   teams   t ON t.id = p.team_id
        LEFT JOIN goals g
          ON  g.player_id = p.id
-         AND g.match_id IN (SELECT id FROM matches WHERE league_id = $1)
+         AND g.match_id IN (SELECT id FROM matches WHERE league_id = $1 AND forfeit_team_id IS NULL)
        WHERE  p.league_id = $1
        GROUP BY p.id, p.name, t.name
        ORDER  BY goals DESC, p.name ASC`,

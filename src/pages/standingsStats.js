@@ -6,7 +6,7 @@ export const QUICK_OPTIONS = [
   { id: 'wins', label: 'Most wins', description: 'Highest number of wins' },
   { id: 'winRate', label: 'Best win rate', description: 'Wins as a percentage of matches played' },
   { id: 'attack', label: 'Best scoring rate', description: 'Goals scored per match' },
-  { id: 'pointsRate', label: 'Best points per match', description: 'Points earned per match played' },
+  { id: 'pointsRate', label: 'Best points per match', description: 'Adjusted table points per match played' },
   { id: 'losses', label: 'Fewest defeats', description: 'Fewest losses among teams that have played' },
 ]
 export const LEAGUE_OPTIONS = [
@@ -17,7 +17,7 @@ export const LEAGUE_OPTIONS = [
   { id: 'draws', label: 'Drawn matches', description: 'Completed matches that ended level' },
   { id: 'drawRate', label: 'Draw rate', description: 'Percentage of completed matches drawn' },
   { id: 'decisive', label: 'Decisive matches', description: 'Completed matches with a winner' },
-  { id: 'points', label: 'Points awarded', description: 'Total points earned by all teams' },
+  { id: 'points', label: 'Total table points', description: 'Points after manual adjustments and forfeit deductions' },
   { id: 'gap', label: 'Lead at the top', description: 'Points separating first and second' },
 ]
 export const DEFAULT_QUICK = ['goals', 'defense', 'difference', 'form']
@@ -27,7 +27,7 @@ export function quickStat(id, standings) {
   const option = QUICK_OPTIONS.find(option => option.id === id)
   const played = standings.filter(team => team.mp > 0)
   if (!played.length) return { ...option, value: '—', sub: 'Awaiting the first result' }
-  const formPoints = team => team.form.reduce((sum, result) => sum + (result === 'W' ? 3 : result === 'D' ? 1 : 0), 0)
+  const formPoints = team => team.recentPoints ?? 0
   const configs = {
     goals: [team => team.gf, false, team => `${team.gf} goals scored`],
     defense: [team => team.ga / team.mp, true, team => `${(team.ga / team.mp).toFixed(2)} conceded / match`],
@@ -59,8 +59,8 @@ export function leagueStats(standings) {
     draws: { value: draws, sub: 'Matches that finished level' },
     drawRate: { value: matches ? `${Math.round(draws / matches * 100)}%` : '—', sub: 'Of completed matches' },
     decisive: { value: matches - draws, sub: 'Matches with a winner' },
-    points: { value: sum('pts'), sub: 'Earned across all teams' },
-    gap: { value: matches && standings.length > 1 ? standings[0].pts - standings[1].pts : '—', sub: 'Points between first and second' },
+    points: { value: sum('pts'), sub: 'After adjustments and penalties' },
+    gap: { value: standings.length > 1 ? standings[0].pts - standings[1].pts : '—', sub: 'Points between first and second' },
   }
 }
 

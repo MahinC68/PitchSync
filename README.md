@@ -172,3 +172,7 @@ PitchSync/
 An admin account can own multiple independent leagues. Use the sidebar switcher to create, switch, or rename leagues; General Settings contains each league’s name and player access code.
 
 See [the Phase 1 migration, API, and verification guide](docs/multi-league.md) before deploying this update.
+
+## Custom league rules
+
+Settings → League Rules configures league points, tiebreaker priorities, manual team adjustments, match duration, and forfeit defaults. Standings recalculate from completed results; Schedule can record or clear forfeits without erasing original scores or scorer records. See [the Phase 2 rules guide](docs/league-rules.md) for ranking semantics, migrations, validation, and testing.

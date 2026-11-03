@@ -23,6 +23,7 @@ const playersRoutes   = require('./routes/players')
 const teamsRoutes     = require('./routes/teams')
 const goalsRoutes     = require('./routes/goals')
 
+app.use('/api/rules', require('./routes/rules'))
 app.use('/api/leagues', require('./routes/leagues'))
 
 app.use('/api/auth',      authRoutes)
